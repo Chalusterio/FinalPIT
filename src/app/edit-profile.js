@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 const EditProfile = () => {
   const router = useRouter();
@@ -11,12 +11,12 @@ const EditProfile = () => {
     name: 'Charlene Lusterio (Cha)',
     phone: '9979617157',
     email: 'charlenelusterio@gmail.com',
-    gender: '',
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
 
   const handleSave = () => {
-    console.log('Profile saved:', userData);
+    console.log('Profile saved:', userData, 'Profile Picture:', profilePicture);
     setIsEditing(false);
     router.back();
   };
@@ -25,14 +25,37 @@ const EditProfile = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleLogout = () => {
-    console.log('User logged out');
-    router.replace('/');
-  };
-
   const handleInputChange = (key, value) => {
     setUserData((prevData) => ({ ...prevData, [key]: value }));
-    setIsEditing(true);
+  };
+
+  const handleImageSelection = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        Alert.alert('Permission Denied', 'Permission to access media library is required!');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1], // Square image crop
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const selectedImageUri = result.assets[0].uri; // Get URI from assets
+        console.log('Selected Image:', selectedImageUri); // Debug log to confirm URI
+        setProfilePicture(selectedImageUri); // Set URI to state
+        Alert.alert('Success', 'Image selected successfully.');
+      } else {
+        Alert.alert('Cancelled', 'No image was selected.');
+      }
+    } catch (error) {
+      console.error('Image Picker Error:', error);
+      Alert.alert('Error', 'An error occurred while selecting the image.');
+    }
   };
 
   return (
@@ -49,7 +72,15 @@ const EditProfile = () => {
 
       {/* Profile Banner */}
       <View style={styles.banner}>
-        <Image source={require('../../assets/avatar.png')} style={styles.avatar} />
+        <View style={styles.backgroundCircle}></View>
+        <View style={styles.backgroundCircle2}></View>
+        <TouchableOpacity onPress={handleImageSelection} disabled={!isEditing}>
+          <Image
+            source={profilePicture ? { uri: profilePicture } : require('../../assets/avatar.png')}
+            style={styles.avatar}
+          />
+        </TouchableOpacity>
+        {isEditing && <Text style={styles.changeText}>Tap to change photo</Text>}
       </View>
 
       {/* Profile Details */}
@@ -60,8 +91,6 @@ const EditProfile = () => {
           value={userData.name}
           onChangeText={(text) => handleInputChange('name', text)}
           editable={isEditing}
-          placeholder="Name"
-          placeholderTextColor="#999"
         />
 
         <Text style={styles.label}>Phone Number</Text>
@@ -70,28 +99,8 @@ const EditProfile = () => {
           value={userData.phone}
           onChangeText={(text) => handleInputChange('phone', text)}
           editable={isEditing}
-          placeholder="Phone"
           keyboardType="phone-pad"
-          placeholderTextColor="#999"
         />
-
-        <Text style={styles.label}>Gender</Text>
-        <View style={styles.dropdown}>
-          <Picker
-            selectedValue={userData.gender}
-            onValueChange={(value) => handleInputChange('gender', value)}
-            enabled={isEditing}
-            style={{ color: userData.gender ? '#000' : '#999' }} // Adjust placeholder color
-          >
-            {!userData.gender && (
-              <Picker.Item label="Please select your gender" value="" enabled={false} />
-            )}
-            <Picker.Item label="Woman" value="woman" />
-            <Picker.Item label="Man" value="man" />
-            <Picker.Item label="Non-binary" value="non-binary" />
-            <Picker.Item label="Prefer not to disclose" value="prefer-not-to-disclose" />
-          </Picker>
-        </View>
 
         <Text style={styles.label}>Email</Text>
         <TextInput
@@ -99,91 +108,102 @@ const EditProfile = () => {
           value={userData.email}
           onChangeText={(text) => handleInputChange('email', text)}
           editable={isEditing}
-          placeholder="Email"
           keyboardType="email-address"
-          placeholderTextColor="#999"
         />
       </View>
-
-      {/* Log Out Button */}
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Log Out</Text>
-      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#EAF2F8',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#00509E',
-  },
-  editText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#00509E',
-  },
-  banner: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    backgroundColor: '#FFFFFF',
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#F5F5F5',
-  },
-  profileDetails: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#00509E',
-    borderRadius: 8,
-    padding: 10,
-    fontSize: 16,
-    backgroundColor: '#FFFFFF',
-    marginBottom: 15,
-  },
-  dropdown: {
-    borderWidth: 1,
-    borderColor: '#00509E',
-    borderRadius: 8,
-    marginBottom: 15,
-    backgroundColor: '#FFFFFF',
-  },
-  logoutButton: {
-    backgroundColor: 'transparent',
-    paddingVertical: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-    marginHorizontal: 20,
-    borderWidth: 1,
-    borderColor: '#FF3B3B',
-  },
-  logoutText: {
-    color: '#FF3B3B',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+    container: {
+      flex: 1,
+      backgroundColor: '#F9FBFC',
+      paddingTop: 40,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingVertical: 15,
+      backgroundColor: 'linear-gradient(90deg, #4B79A1, #283E51)',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
+      elevation: 6,
+    },
+    editText: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: '#4B79A1',
+    },
+    banner: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 40,
+      position: 'relative',
+      backgroundColor: '#4B79A1',
+      borderBottomLeftRadius: 50,
+      borderBottomRightRadius: 50,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      elevation: 10,
+    },
+    avatar: {
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      borderWidth: 4,
+      borderColor: '#FFFFFF',
+      backgroundColor: '#E5E5E5',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 5,
+      elevation: 5,
+    },
+    changeText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      marginTop: 10,
+      fontWeight: '500',
+    },
+    profileDetails: {
+      paddingHorizontal: 20,
+      marginTop: 30,
+      backgroundColor: '#FFFFFF',
+      borderRadius: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 5,
+      paddingVertical: 20,
+    },
+    label: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: '#4B79A1',
+      marginBottom: 8,
+    },
+    input: {
+      fontSize: 16,
+      backgroundColor: '#F7F9FC',
+      padding: 12,
+      borderRadius: 10,
+      marginBottom: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 4,
+      elevation: 3,
+      color: '#333',
+    },
+  });
+  
 
 export default EditProfile;

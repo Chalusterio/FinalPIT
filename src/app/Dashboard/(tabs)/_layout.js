@@ -12,14 +12,14 @@ const DashboardLayout = () => {
         tabBarStyle: {
           backgroundColor: '#EAF2F8', // Matches the background theme of index.js
           borderTopWidth: 1,
-          borderTopColor: '#00509E', // Adds a top border for a clean look
+          borderTopColor: '#4B79A1', // Adds a top border for a clean look
           paddingBottom: 5,
         },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: 'bold',
         },
-        tabBarActiveTintColor: '#00509E', // Active tab color
+        tabBarActiveTintColor: '#4B79A1', // Active tab color
         tabBarInactiveTintColor: '#808080', // Inactive tab color
       }}
     >

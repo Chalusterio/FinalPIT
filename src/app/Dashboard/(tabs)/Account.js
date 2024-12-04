@@ -7,7 +7,11 @@ const Account = () => {
   const router = useRouter();
 
   const handleEditProfile = () => {
-    router.push('/edit-profile'); // Ensure this route is correctly set up
+    router.push('/edit-profile'); // Navigate to Edit Profile screen
+  };
+
+  const handleSettings = () => {
+    router.push('/Settings'); // Navigate to Settings.js
   };
 
   return (
@@ -21,7 +25,7 @@ const Account = () => {
         <View style={styles.userDetails}>
           <Text style={styles.userName}>Charlene Lusterio (Cha)</Text>
           <TouchableOpacity onPress={handleEditProfile} style={styles.editButton}>
-            <MaterialIcons name="edit" size={20} color="#000" />
+            <MaterialIcons name="edit" size={20} color="#4B79A1" />
           </TouchableOpacity>
         </View>
       </View>
@@ -30,26 +34,18 @@ const Account = () => {
       <Text style={styles.sectionTitle}>My Account</Text>
       <TouchableOpacity style={styles.option}>
         <Text style={styles.optionText}>Payment Methods</Text>
-        <MaterialIcons name="chevron-right" size={24} color="#808080" />
+        <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.option}>
         <Text style={styles.optionText}>Saved Places</Text>
-        <MaterialIcons name="chevron-right" size={24} color="#808080" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.option}>
-        <Text style={styles.optionText}>Emergency Contacts</Text>
-        <MaterialIcons name="chevron-right" size={24} color="#808080" />
+        <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
       </TouchableOpacity>
 
       {/* General Section */}
       <Text style={styles.sectionTitle}>General</Text>
-      <TouchableOpacity style={styles.option}>
-        <Text style={styles.optionText}>Help Center</Text>
-        <MaterialIcons name="chevron-right" size={24} color="#808080" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.option}>
+      <TouchableOpacity style={styles.option} onPress={handleSettings}>
         <Text style={styles.optionText}>Settings</Text>
-        <MaterialIcons name="chevron-right" size={24} color="#808080" />
+        <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
       </TouchableOpacity>
     </View>
   );
@@ -58,7 +54,7 @@ const Account = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F9FAFB',
     padding: 20,
   },
   userInfoContainer: {
@@ -67,13 +63,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#EAEAEA',
+    borderBottomColor: '#E0E0E0',
   },
   avatar: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#F5F5F5',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#EAF2F8',
+    borderWidth: 2,
+    borderColor: '#4B79A1',
   },
   userDetails: {
     flex: 1,
@@ -82,18 +80,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   userName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333333',
     flex: 1,
   },
   editButton: {
-    padding: 5,
+    backgroundColor: '#EAF2F8',
+    padding: 8,
+    borderRadius: 20,
+    elevation: 2,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: '700',
+    color: '#4B79A1',
     marginTop: 20,
     marginBottom: 10,
   },
@@ -102,12 +103,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EAEAEA',
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    elevation: 3, // Adds a subtle shadow
   },
   optionText: {
     fontSize: 16,
-    color: '#333',
+    color: '#333333',
+    fontWeight: '500',
   },
 });
 

@@ -33,8 +33,8 @@ const PasswordRecovery = () => {
         value={email}
         onChangeText={setEmail}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
       <Button
         mode="contained"
@@ -60,12 +60,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', // Align with index.js
     textAlign: 'center',
     marginBottom: 20,
-    color: '#00509E', // Updated to match index.js
+    color: '#4B79A1', // Updated to match index.js
   },
   instructions: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#00509E', // Updated to match the theme
+    color: '#4B79A1', // Updated to match the theme
     marginBottom: 20,
   },
   input: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   sendButton: {
-    backgroundColor: '#00509E', // Updated to match index.js button
+    backgroundColor: '#4B79A1', // Updated to match index.js button
     borderRadius: 25,
     marginVertical: 10,
     paddingVertical: 5,

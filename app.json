@@ -2,7 +2,7 @@
   "expo": {
     "name": "UserProfile",
     "slug": "UserProfile",
-    "scheme":"com.UserProfile.app",
+    "scheme": "com.UserProfile.app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,13 +13,17 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "We need access to your photos for profile pictures"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.UserProfile"
     },
     "web": {
       "favicon": "./assets/favicon.png"

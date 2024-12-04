@@ -40,8 +40,8 @@ const LogIn = () => {
         value={email}
         onChangeText={setEmail}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
       <TextInput
         label="Password"
@@ -50,8 +50,8 @@ const LogIn = () => {
         value={password}
         onChangeText={setPassword}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
       <Button
         mode="contained"
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     fontWeight: 'bold',
-    color: '#00509E',
+    color: '#4B79A1',
   },
   input: {
     marginBottom: 15,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   loginButton: {
-    backgroundColor: '#00509E',
+    backgroundColor: '#4B79A1',
     borderRadius: 25,
     marginVertical: 10,
     paddingVertical: 5,
@@ -107,13 +107,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   forgotPasswordText: {
-    color: '#00509E',
+    color: '#4B79A1',
     textAlign: 'center',
     marginBottom: 20,
     textDecorationLine: 'underline',
   },
   registerButtonText: {
-    color: '#00509E',
+    color: '#4B79A1',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',

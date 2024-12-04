@@ -47,8 +47,8 @@ const Register = () => {
         value={firstName}
         onChangeText={setFirstName}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
 
       <TextInput
@@ -57,8 +57,8 @@ const Register = () => {
         value={lastName}
         onChangeText={setLastName}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
 
       <TextInput
@@ -67,8 +67,8 @@ const Register = () => {
         value={username}
         onChangeText={setUsername}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
 
       <TextInput
@@ -77,8 +77,8 @@ const Register = () => {
         value={email}
         onChangeText={setEmail}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
 
       <TextInput
@@ -88,8 +88,8 @@ const Register = () => {
         value={password}
         onChangeText={setPassword}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
 
       <TextInput
@@ -99,8 +99,8 @@ const Register = () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         style={styles.input}
-        outlineColor="#00509E"
-        activeOutlineColor="#00509E"
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
       />
 
       <Button
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#00509E',
+    color: '#4B79A1',
   },
   input: {
     marginBottom: 15,
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   registerButton: {
-    backgroundColor: '#00509E',
+    backgroundColor: '#4B79A1',
     borderRadius: 25,
     marginVertical: 10,
     paddingVertical: 5,
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   loginText: {
-    color: '#00509E',
+    color: '#4B79A1',
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
