@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Text, TextInput, Button, TouchableRipple, IconButton } from 'react-native-paper';
+import { View, StyleSheet, Image, Alert } from 'react-native';
+import { Text, TextInput, Button, TouchableRipple } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 
 const LogIn = () => {
@@ -9,11 +9,21 @@ const LogIn = () => {
   const router = useRouter();
 
   const handleLogin = () => {
-    router.replace('Dashboard'); 
+    if (!email.trim()) {
+      Alert.alert('Error', 'Please enter your mobile number or email.');
+      return;
+    }
+
+    if (!password.trim()) {
+      Alert.alert('Error', 'Please enter your password.');
+      return;
+    }
+
+    router.replace('Dashboard');
   };
 
   const handleRegister = () => {
-    router.push('Register'); 
+    router.push('Register');
   };
 
   return (
@@ -21,6 +31,7 @@ const LogIn = () => {
       <Image
         source={require('../../assets/login_logo.png')}
         style={styles.logo}
+        resizeMode="contain"
       />
       <Text variant="headlineLarge" style={styles.title}>Welcome Back!</Text>
       <TextInput
@@ -29,6 +40,8 @@ const LogIn = () => {
         value={email}
         onChangeText={setEmail}
         style={styles.input}
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
       <TextInput
         label="Password"
@@ -37,11 +50,14 @@ const LogIn = () => {
         value={password}
         onChangeText={setPassword}
         style={styles.input}
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
       <Button
         mode="contained"
         onPress={handleLogin}
         style={styles.loginButton}
+        labelStyle={styles.loginButtonText}
       >
         Log In
       </Button>
@@ -51,24 +67,6 @@ const LogIn = () => {
       <TouchableRipple onPress={handleRegister}>
         <Text style={styles.registerButtonText}>New Here? Register</Text>
       </TouchableRipple>
-
-      <View style={styles.socialLoginContainer}>
-        <Text style={styles.socialLoginText}>Or Login With</Text>
-        <IconButton
-          icon={({ size, color }) => (
-            <Image source={require('../../assets/google_logo.png')} style={{ width: size, height: size }} />
-          )}
-          size={28}
-          onPress={() => {}}
-        />
-        <IconButton
-          icon={({ size, color }) => (
-            <Image source={require('../../assets/facebook_logo.png')} style={{ width: size, height: size }} />
-          )}
-          size={28}
-          onPress={() => {}}
-        />
-      </View>
     </View>
   );
 };
@@ -78,54 +76,48 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#EAF2F8',
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: '100%',
+    height: 150,
     alignSelf: 'center',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   title: {
     textAlign: 'center',
     marginBottom: 20,
-    color: '#333',
+    fontWeight: 'bold',
+    color: '#00509E',
   },
   input: {
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
   },
   loginButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#00509E',
     borderRadius: 25,
     marginVertical: 10,
+    paddingVertical: 5,
   },
   loginButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   forgotPasswordText: {
-    color: '#4a90e2',
+    color: '#00509E',
     textAlign: 'center',
     marginBottom: 20,
+    textDecorationLine: 'underline',
   },
   registerButtonText: {
-    color: '#4a90e2',
+    color: '#00509E',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 10,
-  },
-  socialLoginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  socialLoginText: {
-    fontSize: 16,
-    marginRight: 10,
-    color: '#333',
   },
 });
 

@@ -14,9 +14,27 @@ const Register = () => {
   const router = useRouter();
 
   const handleRegister = () => {
+    // Validation for empty fields
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !username.trim() ||
+      !email.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
+      Alert.alert('Error', 'Please fill out all fields.');
+      return;
+    }
 
-    Alert.alert("User Registration Successful", "Please login"); 
-    router.replace('/'); 
+    // Validation for matching passwords
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match.');
+      return;
+    }
+
+    Alert.alert('User Registration Successful', 'Please login');
+    router.replace('/');
   };
 
   return (
@@ -29,6 +47,8 @@ const Register = () => {
         value={firstName}
         onChangeText={setFirstName}
         style={styles.input}
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
 
       <TextInput
@@ -37,6 +57,8 @@ const Register = () => {
         value={lastName}
         onChangeText={setLastName}
         style={styles.input}
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
 
       <TextInput
@@ -45,6 +67,8 @@ const Register = () => {
         value={username}
         onChangeText={setUsername}
         style={styles.input}
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
 
       <TextInput
@@ -53,6 +77,8 @@ const Register = () => {
         value={email}
         onChangeText={setEmail}
         style={styles.input}
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
 
       <TextInput
@@ -62,6 +88,8 @@ const Register = () => {
         value={password}
         onChangeText={setPassword}
         style={styles.input}
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
 
       <TextInput
@@ -71,6 +99,8 @@ const Register = () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         style={styles.input}
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
 
       <Button
@@ -78,7 +108,6 @@ const Register = () => {
         onPress={handleRegister}
         style={styles.registerButton}
         labelStyle={styles.registerButtonText}
-        contentStyle={{ paddingVertical: 8 }}
       >
         Register
       </Button>
@@ -95,33 +124,37 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#EAF2F8',
   },
   title: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#333',
+    color: '#00509E',
   },
   input: {
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
   },
   registerButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#00509E',
     borderRadius: 25,
     marginVertical: 10,
+    paddingVertical: 5,
   },
   registerButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   loginText: {
-    color: '#4a90e2',
+    color: '#00509E',
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
+    textDecorationLine: 'underline',
   },
 });
 

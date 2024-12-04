@@ -8,16 +8,15 @@ const PasswordRecovery = () => {
   const router = useRouter();
 
   const handlePasswordRecovery = () => {
-    if (!email) {
+    if (!email.trim()) {
       Alert.alert('Error', 'Please enter your email address.');
       return;
     }
 
-   
     Alert.alert('Success', 'Password recovery link sent!', [
       {
         text: 'OK',
-        onPress: () => router.push('/'), 
+        onPress: () => router.push('/'),
       },
     ]);
   };
@@ -34,12 +33,14 @@ const PasswordRecovery = () => {
         value={email}
         onChangeText={setEmail}
         style={styles.input}
-        placeholderTextColor="#999"
+        outlineColor="#00509E"
+        activeOutlineColor="#00509E"
       />
       <Button
         mode="contained"
         onPress={handlePasswordRecovery}
         style={styles.sendButton}
+        labelStyle={styles.sendButtonText}
       >
         Send Recovery Link
       </Button>
@@ -52,33 +53,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#EAF2F8', // Updated to match index.js background color
   },
   title: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: 'bold', // Align with index.js
     textAlign: 'center',
     marginBottom: 20,
-    color: '#333',
+    color: '#00509E', // Updated to match index.js
   },
   instructions: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#666',
+    color: '#00509E', // Updated to match the theme
     marginBottom: 20,
   },
   input: {
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
   },
   sendButton: {
-    backgroundColor: '#4a90e2',
+    backgroundColor: '#00509E', // Updated to match index.js button
     borderRadius: 25,
     marginVertical: 10,
+    paddingVertical: 5,
   },
   sendButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 
