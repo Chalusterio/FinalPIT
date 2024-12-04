@@ -22,7 +22,7 @@ const ChangePass = () => {
 
     // Simulate password change logic (e.g., API call)
     Alert.alert('Success', 'Your password has been changed successfully');
-    router.replace('/'); // Redirect to index.js after success
+    router.replace('/Settings'); // Redirect to Settings.js after success
   };
 
   return (
