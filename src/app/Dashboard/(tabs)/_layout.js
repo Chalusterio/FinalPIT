@@ -11,8 +11,12 @@ const DashboardLayout = () => {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#EAF2F8', // Matches the background theme of index.js
-          borderTopWidth: 1,
-          borderTopColor: '#4B79A1', // Adds a top border for a clean look
+          borderTopWidth: 0, // Remove border
+          shadowColor: '#000', // Shadow color
+          shadowOffset: { width: 0, height: -1 }, // Offset for the shadow
+          shadowOpacity: 0.1, // Shadow opacity (adjust for more/less shadow)
+          shadowRadius: 3, // Blur radius for shadow
+          elevation: 5, // Elevation for Android shadow
           paddingBottom: 5,
         },
         tabBarLabelStyle: {

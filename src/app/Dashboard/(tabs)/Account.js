@@ -7,7 +7,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 const Account = () => {
   const router = useRouter();
 
-  // Animation states for buttons
   const [scaleEdit] = React.useState(new Animated.Value(1));
   const [scaleSettings] = React.useState(new Animated.Value(1));
   const [scalePayment] = React.useState(new Animated.Value(1));
@@ -39,7 +38,6 @@ const Account = () => {
 
   return (
     <View style={styles.container}>
-      {/* User Info Section */}
       <View style={styles.userInfoContainer}>
         <Image
           source={require('../../../../assets/avatar.png')}
@@ -59,7 +57,6 @@ const Account = () => {
         </View>
       </View>
 
-      {/* My Account Section */}
       <Text style={styles.sectionTitle}>My Account</Text>
       <Animated.View style={{ transform: [{ scale: scalePayment }] }}>
         <TouchableOpacity
@@ -82,7 +79,6 @@ const Account = () => {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* General Section */}
       <Text style={styles.sectionTitle}>General</Text>
       <Animated.View style={{ transform: [{ scale: scaleSettings }] }}>
         <TouchableOpacity
@@ -103,6 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAF2F8',
     padding: 20,
+    paddingTop: 50, // Added to push content lower
   },
   userInfoContainer: {
     flexDirection: 'row',

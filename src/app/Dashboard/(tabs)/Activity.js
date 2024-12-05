@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 
 const Activity = () => {
   const [bookings, setBookings] = useState([]);
@@ -23,33 +23,44 @@ const Activity = () => {
   }, []);
 
   const renderBookingItem = ({ item }) => (
-    <View style={styles.bookingItem}>
-      <Text style={styles.bookingTitle}>{item.title}</Text>
-      <Text style={styles.bookingDate}>{item.date}</Text>
-      <Text style={styles.bookingDetails}>{item.details}</Text>
-    </View>
+    <TouchableOpacity style={styles.bookingItem}>
+      <View>
+        <Text style={styles.bookingTitle}>{item.title}</Text>
+        <Text style={styles.bookingDate}>{item.date}</Text>
+      </View>
+      <View style={styles.priceContainer}>
+        <Text style={styles.bookingPrice}>₱{item.price}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#4B79A1" />
-        <Text>Loading your booking history...</Text>
+        <Text style={styles.loaderText}>Loading your booking history...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Your Booking History</Text>
+      <View style={styles.header}>
+        <Text style={styles.sectionTitle}>Activity</Text>
+        {/* Show "Recent" only if there are bookings */}
+        {bookings.length > 0 && <Text style={styles.sectionSubtitle}>Recent</Text>}
+      </View>
       {bookings.length > 0 ? (
         <FlatList
           data={bookings}
-          keyExtractor={(item) => item.id.toString()} // Ensure `id` is unique and exists
+          keyExtractor={(item) => item.id.toString()}
           renderItem={renderBookingItem}
+          contentContainerStyle={styles.listContainer}
         />
       ) : (
-        <Text style={styles.noBookingsText}>You have no bookings yet.</Text>
+        <View style={styles.noBookingsContainer}>
+          <Text style={styles.noBookingsText}>You have no bookings yet.</Text>
+        </View>
       )}
     </View>
   );
@@ -58,30 +69,46 @@ const Activity = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#EAF2F8',
     padding: 20,
-    backgroundColor: '#F5F5F5',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+  header: {
+    marginTop: 30, // Added margin to push the header down
     marginBottom: 20,
-    textAlign: 'center',
+  },
+  sectionTitle: {
+    fontSize: 35, // Increased font size for "Activity"
+    fontWeight: 'bold',
+    color: '#4B79A1',
+    textAlign: 'left', // Aligned to the left
+  },
+  sectionSubtitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+    marginTop: 10, // Added margin for spacing between "Activity" and "Recent"
+    textAlign: 'left',
+  },
+  listContainer: {
+    paddingBottom: 20,
   },
   bookingItem: {
-    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
+    marginBottom: 15,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   bookingTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#4B79A1',
   },
   bookingDate: {
@@ -89,21 +116,36 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 5,
   },
-  bookingDetails: {
-    fontSize: 14,
-    color: '#444',
-    marginTop: 10,
+  priceContainer: {
+    backgroundColor: '#EFF6FF',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  bookingPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4B79A1',
+  },
+  noBookingsContainer: {
+    flex: 1,
+    justifyContent: 'center', // Center vertically
+    alignItems: 'center', // Center horizontally
   },
   noBookingsText: {
     fontSize: 16,
-    color: '#999',
+    color: '#4B79A1',
     textAlign: 'center',
-    marginTop: 50,
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loaderText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#4B79A1',
   },
 });
 
