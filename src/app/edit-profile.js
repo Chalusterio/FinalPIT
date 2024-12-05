@@ -150,16 +150,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAF2F8',
   },
-  header: {
-    height: 100,
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
+header: {
+  height: 100,
+  backgroundColor: '#FFFFFF',
+  flexDirection: 'row',
+  alignItems: 'center', // Centers items vertically
+  justifyContent: 'space-between', // Creates space between the close button, header text, and edit/save button
+  paddingHorizontal: 15,
+  paddingTop: 50, // Adjusts header content to account for status bar or other spacing
+  borderBottomWidth: 1,
+  borderBottomColor: '#ddd',
+},
+
   headerText: {
     fontSize: 22,
     fontWeight: '700',
@@ -217,5 +219,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
 });
+
 
 export default EditProfile;
