@@ -36,6 +36,14 @@ const Account = () => {
     router.push('/Settings');
   };
 
+  const handlePaymentMethods = () => {
+    router.push('/PaymentMed');
+  };
+
+  const handleSavedPlaces = () => {
+    router.push('/SavedPlaces');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.userInfoContainer}>
@@ -61,7 +69,7 @@ const Account = () => {
       <Animated.View style={{ transform: [{ scale: scalePayment }] }}>
         <TouchableOpacity
           onPressIn={() => handlePressIn(scalePayment)}
-          onPressOut={() => handlePressOut(scalePayment, () => {})}
+          onPressOut={() => handlePressOut(scalePayment, handlePaymentMethods)}
           style={styles.option}
         >
           <Text style={styles.optionText}>Payment Methods</Text>
@@ -71,7 +79,7 @@ const Account = () => {
       <Animated.View style={{ transform: [{ scale: scalePlaces }] }}>
         <TouchableOpacity
           onPressIn={() => handlePressIn(scalePlaces)}
-          onPressOut={() => handlePressOut(scalePlaces, () => {})}
+          onPressOut={() => handlePressOut(scalePlaces, handleSavedPlaces)}
           style={styles.option}
         >
           <Text style={styles.optionText}>Saved Places</Text>
@@ -99,7 +107,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAF2F8',
     padding: 20,
-    paddingTop: 50, // Added to push content lower
+    paddingTop: 50,
   },
   userInfoContainer: {
     flexDirection: 'row',
