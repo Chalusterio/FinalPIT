@@ -1,58 +1,74 @@
-import React from 'react';
-import { View, StyleSheet, Alert, ImageBackground } from 'react-native';
-import { Text, TouchableRipple, Button } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, StyleSheet, Alert, Animated, TouchableOpacity } from 'react-native';
+import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const Settings = () => {
   const router = useRouter();
 
-  const handleClose = () => {
-    router.push('/Dashboard/(tabs)/Account'); // Navigate to Account.js
+  // Animation states for buttons
+  const [scaleClose] = useState(new Animated.Value(1));
+  const [scaleLogout] = useState(new Animated.Value(1));
+
+  const handlePressInClose = () => {
+    Animated.spring(scaleClose, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
   };
 
-  const handleChangePassword = () => {
-    router.push('/ChangePass'); // Navigate to ChangePass.js
+  const handlePressOutClose = () => {
+    Animated.spring(scaleClose, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start(() => {
+      router.push('/Dashboard/(tabs)/Account');
+    });
   };
 
-  const handleDeleteAccount = () => {
-    router.push('/DeleteAcc'); // Navigate to DeleteAcc.js
+  const handlePressInLogout = () => {
+    Animated.spring(scaleLogout, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to log out?',
-      [
+  const handlePressOutLogout = () => {
+    Animated.spring(scaleLogout, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start(() => {
+      Alert.alert('Logout', 'Are you sure you want to log out?', [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Logout', onPress: () => router.replace('/') }, // Navigate to index.js
-      ]
-    );
+        { text: 'Logout', onPress: () => router.replace('/') },
+      ]);
+    });
   };
+
+  const handleChangePassword = () => router.push('/ChangePass');
+  const handleDeleteAccount = () => router.push('/DeleteAcc');
 
   return (
-    <ImageBackground
-      source={{
-        uri: 'https://images.unsplash.com/photo-1503264116251-35a269479413?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      }}
-      style={styles.background}
-    >
+    <View style={styles.background}>
       {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.headerContent}>
-          <MaterialIcons
-            name="close"
-            size={28}
-            color="#4B79A1"
-            onPress={handleClose}
-          />
+          <Animated.View style={{ transform: [{ scale: scaleClose }] }}>
+            <TouchableOpacity
+              onPressIn={handlePressInClose}
+              onPressOut={handlePressOutClose}
+            >
+              <MaterialIcons name="close" size={28} color="#4B79A1" />
+            </TouchableOpacity>
+          </Animated.View>
           <Text style={styles.headerText}>Settings</Text>
         </View>
       </View>
 
       {/* Content Section */}
       <View style={styles.overlay}>
-        <TouchableRipple
+        <TouchableOpacity
           onPress={handleChangePassword}
           style={[styles.option, styles.shadow]}
         >
@@ -60,8 +76,8 @@ const Settings = () => {
             <Text style={styles.optionText}>Change Password</Text>
             <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
           </View>
-        </TouchableRipple>
-        <TouchableRipple
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={handleDeleteAccount}
           style={[styles.option, styles.shadow]}
         >
@@ -69,30 +85,32 @@ const Settings = () => {
             <Text style={styles.optionText}>Delete Account</Text>
             <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
           </View>
-        </TouchableRipple>
+        </TouchableOpacity>
 
-        <Button
-          mode="contained"
-          onPress={handleLogout}
-          style={[styles.logoutButton, styles.shadow]}
-          labelStyle={styles.logoutButtonText}
-        >
-          Log Out
-        </Button>
+        <Animated.View style={{ transform: [{ scale: scaleLogout }] }}>
+          <TouchableOpacity
+            onPressIn={handlePressInLogout}
+            onPressOut={handlePressOutLogout}
+            style={[styles.logoutButton, styles.shadow]}
+          >
+            <Text style={styles.logoutButtonText}>Log Out</Text>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    backgroundColor: '#EAF2F8', // Restored background color
   },
   header: {
-    height: 100, // Taller header
+    height: 100, // Original header height
     backgroundColor: '#FFFFFF',
     justifyContent: 'flex-end',
-    paddingBottom: 10, // Adds spacing below the content
+    paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     position: 'absolute',
@@ -116,9 +134,8 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     paddingHorizontal: 20,
-    paddingTop: 120, // Ensures content doesn't overlap with the taller header
+    paddingTop: 120, // Ensures content doesn't overlap with the header
   },
   option: {
     backgroundColor: '#FFFFFF',
@@ -155,6 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 

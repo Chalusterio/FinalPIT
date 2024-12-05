@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, TextInput } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { View, StyleSheet, Alert, Animated, TouchableOpacity, TextInput } from 'react-native';
+import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 
 const DeleteAcc = () => {
@@ -8,8 +8,43 @@ const DeleteAcc = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // Animation states for buttons
+  const [scaleDelete] = useState(new Animated.Value(1));
+  const [scaleCancel] = useState(new Animated.Value(1));
+
+  const handlePressInDelete = () => {
+    Animated.spring(scaleDelete, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOutDelete = () => {
+    Animated.spring(scaleDelete, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start(() => {
+      handleDeleteAccount();
+    });
+  };
+
+  const handlePressInCancel = () => {
+    Animated.spring(scaleCancel, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOutCancel = () => {
+    Animated.spring(scaleCancel, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start(() => {
+      router.push('/Settings');
+    });
+  };
+
   const handleDeleteAccount = () => {
-    // Validate input
     if (!password || !confirmPassword) {
       Alert.alert('Error', 'Both password fields are required');
       return;
@@ -19,9 +54,12 @@ const DeleteAcc = () => {
       return;
     }
 
-    // Simulate account deletion logic (e.g., API call)
-    Alert.alert('Success', 'Your account has been deleted successfully');
-    router.replace('/'); // Redirect to index.js after account deletion
+    Alert.alert('Success', 'Your account has been deleted successfully', [
+      {
+        text: 'OK',
+        onPress: () => router.replace('/'), // Navigate to index.js
+      },
+    ]);
   };
 
   return (
@@ -44,21 +82,26 @@ const DeleteAcc = () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <Button
-        mode="contained"
-        onPress={handleDeleteAccount}
-        style={styles.deleteButton}
-        labelStyle={styles.deleteButtonText}
-      >
-        Confirm Delete
-      </Button>
-      <Button
-        mode="text"
-        onPress={() => router.back()} // Go back to the previous screen
-        labelStyle={styles.cancelButtonText}
-      >
-        Cancel
-      </Button>
+
+      <Animated.View style={{ transform: [{ scale: scaleDelete }] }}>
+        <TouchableOpacity
+          onPressIn={handlePressInDelete}
+          onPressOut={handlePressOutDelete}
+          style={styles.deleteButton}
+        >
+          <Text style={styles.deleteButtonText}>Confirm Delete</Text>
+        </TouchableOpacity>
+      </Animated.View>
+
+      <Animated.View style={{ transform: [{ scale: scaleCancel }] }}>
+        <TouchableOpacity
+          onPressIn={handlePressInCancel}
+          onPressOut={handlePressOutCancel}
+          style={styles.cancelButton}
+        >
+          <Text style={styles.cancelButtonText}>Cancel</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 };
@@ -66,8 +109,8 @@ const DeleteAcc = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#EAF2F8',
+    paddingHorizontal: 20,
     justifyContent: 'center',
   },
   headerText: {
@@ -79,17 +122,17 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
-    color: '#333',
+    color: '#4B79A1',
     marginBottom: 30,
     textAlign: 'center',
   },
   input: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 15,
     fontSize: 16,
     marginBottom: 15,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -98,17 +141,36 @@ const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: '#4B79A1',
     borderRadius: 25,
-    paddingVertical: 10,
-    marginTop: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
   },
   deleteButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  cancelButton: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 25,
+    paddingVertical: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#4B79A1',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
   cancelButtonText: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#4B79A1',
   },
 });

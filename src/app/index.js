@@ -1,12 +1,36 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, Alert } from 'react-native';
-import { Text, TextInput, Button, TouchableRipple } from 'react-native-paper';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Alert,
+  TouchableOpacity,
+  Animated,
+} from 'react-native';
+import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [scale] = useState(new Animated.Value(1)); // Initial scale value
   const router = useRouter();
+
+  const handleLoginPressIn = () => {
+    Animated.spring(scale, {
+      toValue: 0.95, // Slightly shrink the button
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleLoginPressOut = () => {
+    Animated.spring(scale, {
+      toValue: 1, // Return to original size
+      useNativeDriver: true,
+    }).start(() => {
+      handleLogin(); // Trigger the login logic after the animation
+    });
+  };
 
   const handleLogin = () => {
     if (!email.trim()) {
@@ -33,7 +57,9 @@ const LogIn = () => {
         style={styles.logo}
         resizeMode="contain"
       />
-      <Text variant="headlineLarge" style={styles.title}>Welcome Back!</Text>
+      <Text variant="headlineLarge" style={styles.title}>
+        Welcome Back!
+      </Text>
       <TextInput
         label="Mobile number or email"
         mode="outlined"
@@ -53,20 +79,22 @@ const LogIn = () => {
         outlineColor="#4B79A1"
         activeOutlineColor="#4B79A1"
       />
-      <Button
-        mode="contained"
-        onPress={handleLogin}
-        style={styles.loginButton}
-        labelStyle={styles.loginButtonText}
-      >
-        Log In
-      </Button>
-      <TouchableRipple onPress={() => router.push('PasswordRecovery')}>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressIn={handleLoginPressIn}
+          onPressOut={handleLoginPressOut}
+          style={styles.loginButton}
+        >
+          <Text style={styles.loginButtonText}>Log In</Text>
+        </TouchableOpacity>
+      </Animated.View>
+      <TouchableOpacity onPress={() => router.push('PasswordRecovery')}>
         <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-      </TouchableRipple>
-      <TouchableRipple onPress={handleRegister}>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleRegister}>
         <Text style={styles.registerButtonText}>New Here? Register</Text>
-      </TouchableRipple>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -99,7 +127,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#4B79A1',
     borderRadius: 25,
     marginVertical: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   loginButtonText: {
     color: '#FFFFFF',
@@ -111,6 +145,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     textDecorationLine: 'underline',
+    paddingVertical: 5,
   },
   registerButtonText: {
     color: '#4B79A1',
@@ -118,6 +153,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 10,
+    paddingVertical: 5,
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { Text, TextInput, Button, TouchableRipple } from 'react-native-paper';
+import { View, StyleSheet, Alert, Animated, TouchableOpacity } from 'react-native';
+import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 
 const Register = () => {
@@ -10,11 +10,43 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const [scaleRegister] = useState(new Animated.Value(1)); // Scaling for the Register button
+  const [scaleLogin] = useState(new Animated.Value(1)); // Scaling for the Log In link
   const router = useRouter();
 
+  const handlePressInRegister = () => {
+    Animated.spring(scaleRegister, {
+      toValue: 0.95, // Shrinks the button slightly
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOutRegister = () => {
+    Animated.spring(scaleRegister, {
+      toValue: 1, // Returns button to original size
+      useNativeDriver: true,
+    }).start(() => {
+      handleRegister(); // Triggers the registration logic after animation
+    });
+  };
+
+  const handlePressInLogin = () => {
+    Animated.spring(scaleLogin, {
+      toValue: 0.95, // Shrinks the link slightly
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOutLogin = () => {
+    Animated.spring(scaleLogin, {
+      toValue: 1, // Returns link to original size
+      useNativeDriver: true,
+    }).start(() => {
+      router.push('/'); // Navigate to the login screen after animation
+    });
+  };
+
   const handleRegister = () => {
-    // Validation for empty fields
     if (
       !firstName.trim() ||
       !lastName.trim() ||
@@ -27,7 +59,6 @@ const Register = () => {
       return;
     }
 
-    // Validation for matching passwords
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match.');
       return;
@@ -103,18 +134,27 @@ const Register = () => {
         activeOutlineColor="#4B79A1"
       />
 
-      <Button
-        mode="contained"
-        onPress={handleRegister}
-        style={styles.registerButton}
-        labelStyle={styles.registerButtonText}
-      >
-        Register
-      </Button>
+      <Animated.View style={{ transform: [{ scale: scaleRegister }] }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressIn={handlePressInRegister}
+          onPressOut={handlePressOutRegister}
+          style={styles.registerButton}
+        >
+          <Text style={styles.registerButtonText}>Register</Text>
+        </TouchableOpacity>
+      </Animated.View>
 
-      <TouchableRipple onPress={() => router.push('/')}>
-        <Text style={styles.loginText}>Already have an account? Log In</Text>
-      </TouchableRipple>
+      <Animated.View style={{ transform: [{ scale: scaleLogin }] }}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPressIn={handlePressInLogin}
+          onPressOut={handlePressOutLogin}
+          style={styles.loginLink}
+        >
+          <Text style={styles.loginText}>Already have an account? Log In</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 };
@@ -142,17 +182,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#4B79A1',
     borderRadius: 25,
     marginVertical: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   registerButtonText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
   },
+  loginLink: {
+    marginTop: 20,
+    alignSelf: 'center',
+  },
   loginText: {
     color: '#4B79A1',
-    textAlign: 'center',
-    marginTop: 20,
     fontSize: 16,
     textDecorationLine: 'underline',
   },

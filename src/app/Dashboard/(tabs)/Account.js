@@ -1,17 +1,40 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, Animated, TouchableOpacity, Image } from 'react-native';
+import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const Account = () => {
   const router = useRouter();
 
+  // Animation states for buttons
+  const [scaleEdit] = React.useState(new Animated.Value(1));
+  const [scaleSettings] = React.useState(new Animated.Value(1));
+  const [scalePayment] = React.useState(new Animated.Value(1));
+  const [scalePlaces] = React.useState(new Animated.Value(1));
+
+  const handlePressIn = (scale) => {
+    Animated.spring(scale, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = (scale, action) => {
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start(() => {
+      action();
+    });
+  };
+
   const handleEditProfile = () => {
-    router.push('/edit-profile'); // Navigate to Edit Profile screen
+    router.push('/edit-profile');
   };
 
   const handleSettings = () => {
-    router.push('/Settings'); // Navigate to Settings.js
+    router.push('/Settings');
   };
 
   return (
@@ -19,34 +42,58 @@ const Account = () => {
       {/* User Info Section */}
       <View style={styles.userInfoContainer}>
         <Image
-          source={require('../../../../assets/avatar.png')} // Replace with your avatar image
+          source={require('../../../../assets/avatar.png')}
           style={styles.avatar}
         />
         <View style={styles.userDetails}>
           <Text style={styles.userName}>Charlene Lusterio (Cha)</Text>
-          <TouchableOpacity onPress={handleEditProfile} style={styles.editButton}>
-            <MaterialIcons name="edit" size={20} color="#4B79A1" />
-          </TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: scaleEdit }] }}>
+            <TouchableOpacity
+              onPressIn={() => handlePressIn(scaleEdit)}
+              onPressOut={() => handlePressOut(scaleEdit, handleEditProfile)}
+              style={styles.editButton}
+            >
+              <MaterialIcons name="edit" size={20} color="#4B79A1" />
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       </View>
 
       {/* My Account Section */}
       <Text style={styles.sectionTitle}>My Account</Text>
-      <TouchableOpacity style={styles.option}>
-        <Text style={styles.optionText}>Payment Methods</Text>
-        <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.option}>
-        <Text style={styles.optionText}>Saved Places</Text>
-        <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
-      </TouchableOpacity>
+      <Animated.View style={{ transform: [{ scale: scalePayment }] }}>
+        <TouchableOpacity
+          onPressIn={() => handlePressIn(scalePayment)}
+          onPressOut={() => handlePressOut(scalePayment, () => {})}
+          style={styles.option}
+        >
+          <Text style={styles.optionText}>Payment Methods</Text>
+          <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
+        </TouchableOpacity>
+      </Animated.View>
+      <Animated.View style={{ transform: [{ scale: scalePlaces }] }}>
+        <TouchableOpacity
+          onPressIn={() => handlePressIn(scalePlaces)}
+          onPressOut={() => handlePressOut(scalePlaces, () => {})}
+          style={styles.option}
+        >
+          <Text style={styles.optionText}>Saved Places</Text>
+          <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
+        </TouchableOpacity>
+      </Animated.View>
 
       {/* General Section */}
       <Text style={styles.sectionTitle}>General</Text>
-      <TouchableOpacity style={styles.option} onPress={handleSettings}>
-        <Text style={styles.optionText}>Settings</Text>
-        <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
-      </TouchableOpacity>
+      <Animated.View style={{ transform: [{ scale: scaleSettings }] }}>
+        <TouchableOpacity
+          onPressIn={() => handlePressIn(scaleSettings)}
+          onPressOut={() => handlePressOut(scaleSettings, handleSettings)}
+          style={styles.option}
+        >
+          <Text style={styles.optionText}>Settings</Text>
+          <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 };
@@ -54,7 +101,7 @@ const Account = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#EAF2F8',
     padding: 20,
   },
   userInfoContainer: {
@@ -82,14 +129,18 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333333',
+    color: '#4B79A1',
     flex: 1,
   },
   editButton: {
-    backgroundColor: '#EAF2F8',
+    backgroundColor: '#FFFFFF',
     padding: 8,
     borderRadius: 20,
-    elevation: 2,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   sectionTitle: {
     fontSize: 18,
@@ -106,12 +157,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    elevation: 3, // Adds a subtle shadow
+    borderRadius: 12,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   optionText: {
     fontSize: 16,
-    color: '#333333',
+    color: '#4B79A1',
     fontWeight: '500',
   },
 });

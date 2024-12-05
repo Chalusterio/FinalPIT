@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, StyleSheet, Animated, TouchableOpacity, Image, Alert, TextInput } from 'react-native';
+import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -15,8 +16,28 @@ const EditProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
 
+  // Animation states
+  const [scaleClose] = useState(new Animated.Value(1));
+  const [scaleSave] = useState(new Animated.Value(1));
+
+  const handlePressIn = (scale) => {
+    Animated.spring(scale, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = (scale, action) => {
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start(() => {
+      action();
+    });
+  };
+
   const handleSave = () => {
-    console.log('Profile saved:', userData, 'Profile Picture:', profilePicture);
+    Alert.alert('Profile Saved', 'Your changes have been saved successfully.');
     setIsEditing(false);
     router.back();
   };
@@ -45,15 +66,13 @@ const EditProfile = () => {
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        const selectedImageUri = result.assets[0].uri; // Get URI from assets
-        console.log('Selected Image:', selectedImageUri); // Debug log to confirm URI
-        setProfilePicture(selectedImageUri); // Set URI to state
+        const selectedImageUri = result.assets[0].uri;
+        setProfilePicture(selectedImageUri);
         Alert.alert('Success', 'Image selected successfully.');
       } else {
         Alert.alert('Cancelled', 'No image was selected.');
       }
     } catch (error) {
-      console.error('Image Picker Error:', error);
       Alert.alert('Error', 'An error occurred while selecting the image.');
     }
   };
@@ -62,18 +81,29 @@ const EditProfile = () => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <MaterialIcons name="close" size={24} color="#333" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={isEditing ? handleSave : handleEditToggle}>
-          <Text style={styles.editText}>{isEditing ? 'Save' : 'Edit'}</Text>
-        </TouchableOpacity>
+        <Animated.View style={{ transform: [{ scale: scaleClose }] }}>
+          <TouchableOpacity
+            onPressIn={() => handlePressIn(scaleClose)}
+            onPressOut={() => handlePressOut(scaleClose, () => router.back())}
+          >
+            <MaterialIcons name="close" size={28} color="#4B79A1" />
+          </TouchableOpacity>
+        </Animated.View>
+        <Text style={styles.headerText}>{isEditing ? 'Edit Profile' : 'Profile'}</Text>
+        <Animated.View style={{ transform: [{ scale: scaleSave }] }}>
+          <TouchableOpacity
+            onPressIn={() => handlePressIn(scaleSave)}
+            onPressOut={() =>
+              handlePressOut(scaleSave, isEditing ? handleSave : handleEditToggle)
+            }
+          >
+            <Text style={styles.editText}>{isEditing ? 'Save' : 'Edit'}</Text>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
 
       {/* Profile Banner */}
       <View style={styles.banner}>
-        <View style={styles.backgroundCircle}></View>
-        <View style={styles.backgroundCircle2}></View>
         <TouchableOpacity onPress={handleImageSelection} disabled={!isEditing}>
           <Image
             source={profilePicture ? { uri: profilePicture } : require('../../assets/avatar.png')}
@@ -116,94 +146,76 @@ const EditProfile = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#F9FBFC',
-      paddingTop: 40,
-    },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: 20,
-      paddingVertical: 15,
-      backgroundColor: 'linear-gradient(90deg, #4B79A1, #283E51)',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.2,
-      shadowRadius: 4,
-      elevation: 6,
-    },
-    editText: {
-      fontSize: 18,
-      fontWeight: '600',
-      color: '#4B79A1',
-    },
-    banner: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: 40,
-      position: 'relative',
-      backgroundColor: '#4B79A1',
-      borderBottomLeftRadius: 50,
-      borderBottomRightRadius: 50,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.2,
-      shadowRadius: 6,
-      elevation: 10,
-    },
-    avatar: {
-      width: 120,
-      height: 120,
-      borderRadius: 60,
-      borderWidth: 4,
-      borderColor: '#FFFFFF',
-      backgroundColor: '#E5E5E5',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 5,
-      elevation: 5,
-    },
-    changeText: {
-      color: '#FFFFFF',
-      fontSize: 16,
-      marginTop: 10,
-      fontWeight: '500',
-    },
-    profileDetails: {
-      paddingHorizontal: 20,
-      marginTop: 30,
-      backgroundColor: '#FFFFFF',
-      borderRadius: 10,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
-      elevation: 5,
-      paddingVertical: 20,
-    },
-    label: {
-      fontSize: 14,
-      fontWeight: '600',
-      color: '#4B79A1',
-      marginBottom: 8,
-    },
-    input: {
-      fontSize: 16,
-      backgroundColor: '#F7F9FC',
-      padding: 12,
-      borderRadius: 10,
-      marginBottom: 20,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.05,
-      shadowRadius: 4,
-      elevation: 3,
-      color: '#333',
-    },
-  });
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#EAF2F8',
+  },
+  header: {
+    height: 100,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  headerText: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#4B79A1',
+    textAlign: 'center',
+    flex: 1,
+  },
+  editText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4B79A1',
+  },
+  banner: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+    backgroundColor: '#4B79A1',
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 4,
+    borderColor: '#FFFFFF',
+    backgroundColor: '#E5E5E5',
+  },
+  changeText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginTop: 10,
+    fontWeight: '500',
+  },
+  profileDetails: {
+    paddingHorizontal: 20,
+    marginTop: 30,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4B79A1',
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 15,
+    fontSize: 16,
+    marginBottom: 15,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+});
 
 export default EditProfile;
