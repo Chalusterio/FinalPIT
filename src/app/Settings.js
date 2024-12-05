@@ -7,8 +7,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 const Settings = () => {
   const router = useRouter();
 
+  const handleClose = () => {
+    router.push('/Dashboard/(tabs)/Account'); // Navigate to Account.js
+  };
+
   const handleChangePassword = () => {
-    router.push('/ChangePass'); // Updated to match the file name
+    router.push('/ChangePass'); // Navigate to ChangePass.js
   };
 
   const handleDeleteAccount = () => {
@@ -33,10 +37,21 @@ const Settings = () => {
       }}
       style={styles.background}
     >
-      <View style={styles.overlay}>
-        <Text style={styles.headerText}>Settings</Text>
+      {/* Header Section */}
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <MaterialIcons
+            name="close"
+            size={28}
+            color="#4B79A1"
+            onPress={handleClose}
+          />
+          <Text style={styles.headerText}>Settings</Text>
+        </View>
+      </View>
 
-        {/* Options */}
+      {/* Content Section */}
+      <View style={styles.overlay}>
         <TouchableRipple
           onPress={handleChangePassword}
           style={[styles.option, styles.shadow]}
@@ -56,7 +71,6 @@ const Settings = () => {
           </View>
         </TouchableRipple>
 
-        {/* Logout Button */}
         <Button
           mode="contained"
           onPress={handleLogout}
@@ -74,18 +88,37 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Transparent white overlay
-    paddingHorizontal: 20,
-    justifyContent: 'center',
+  header: {
+    height: 100, // Taller header
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'flex-end',
+    paddingBottom: 10, // Adds spacing below the content
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
   },
   headerText: {
     textAlign: 'center',
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: '700',
     color: '#4B79A1',
-    marginBottom: 30,
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingHorizontal: 20,
+    paddingTop: 120, // Ensures content doesn't overlap with the taller header
   },
   option: {
     backgroundColor: '#FFFFFF',
