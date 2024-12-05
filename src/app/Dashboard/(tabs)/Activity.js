@@ -72,21 +72,32 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAF2F8',
     padding: 20,
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#EAF2F8', // Ensures loading background matches the app theme
+  },
+  loaderText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#4B79A1',
+  },
   header: {
-    marginTop: 30, // Added margin to push the header down
+    marginTop: 30,
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 35, // Increased font size for "Activity"
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#4B79A1',
-    textAlign: 'left', // Aligned to the left
+    textAlign: 'left',
   },
   sectionSubtitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#666',
-    marginTop: 10, // Added margin for spacing between "Activity" and "Recent"
+    marginTop: 10,
     textAlign: 'left',
   },
   listContainer: {
@@ -129,23 +140,13 @@ const styles = StyleSheet.create({
   },
   noBookingsContainer: {
     flex: 1,
-    justifyContent: 'center', // Center vertically
-    alignItems: 'center', // Center horizontally
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   noBookingsText: {
     fontSize: 16,
     color: '#4B79A1',
     textAlign: 'center',
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loaderText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#4B79A1',
   },
 });
 
