@@ -47,6 +47,9 @@ const Register = () => {
   };
 
   const handleRegister = () => {
+    // Regex to validate email with @ and .com
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (
       !firstName.trim() ||
       !lastName.trim() ||
@@ -56,6 +59,11 @@ const Register = () => {
       !confirmPassword.trim()
     ) {
       Alert.alert('Error', 'Please fill out all fields.');
+      return;
+    }
+
+    if (!emailPattern.test(email)) {
+      Alert.alert('Error', 'Please enter a valid email address format');
       return;
     }
 
@@ -70,7 +78,9 @@ const Register = () => {
 
   return (
     <View style={styles.container}>
-      <Text variant="headlineLarge" style={styles.title}>Create Account</Text>
+      <Text variant="headlineLarge" style={styles.title}>
+        Create Account
+      </Text>
 
       <TextInput
         label="First Name"

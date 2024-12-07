@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
   const [scale] = useState(new Animated.Value(1)); // Initial scale value
   const router = useRouter();
 
@@ -33,15 +35,17 @@ const LogIn = () => {
   };
 
   const handleLogin = () => {
+    // Regex for email and numeric-only input (mobile number)
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const mobilePattern = /^[0-9]+$/;
 
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter your mobile number or email.');
       return;
     }
 
-    if (!emailPattern.test(email)) {
-      Alert.alert('Error', 'Please enter a valid email address.');
+    if (!emailPattern.test(email) && !mobilePattern.test(email)) {
+      Alert.alert('Error', 'Please enter a valid email address or mobile number.');
       return;
     }
 
@@ -68,7 +72,7 @@ const LogIn = () => {
         Welcome Back!
       </Text>
       <TextInput
-        label="Mobile number or email"
+        label="Email or Mobile Number"
         mode="outlined"
         value={email}
         onChangeText={setEmail}
@@ -76,16 +80,30 @@ const LogIn = () => {
         outlineColor="#4B79A1"
         activeOutlineColor="#4B79A1"
       />
-      <TextInput
-        label="Password"
-        mode="outlined"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        style={styles.input}
-        outlineColor="#4B79A1"
-        activeOutlineColor="#4B79A1"
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          label="Password"
+          mode="outlined"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+          style={[styles.input, styles.passwordInput]}
+          outlineColor="#4B79A1"
+          activeOutlineColor="#4B79A1"
+        />
+        {password.trim().length > 0 && ( // Show the icon only if there's input
+          <TouchableOpacity
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Ionicons
+              name={showPassword ? 'eye-off' : 'eye'}
+              size={24}
+              color="#4B79A1"
+            />
+          </TouchableOpacity>
+        )}
+      </View>
       <Animated.View style={{ transform: [{ scale }] }}>
         <TouchableOpacity
           activeOpacity={1}
@@ -129,6 +147,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  passwordInput: {
+    flex: 1,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 15,
   },
   loginButton: {
     backgroundColor: '#4B79A1',

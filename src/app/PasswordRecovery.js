@@ -25,8 +25,20 @@ const PasswordRecovery = () => {
   };
 
   const handlePasswordRecovery = () => {
+    // Regex for valid email and pure numeric mobile number
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const mobilePattern = /^[0-9]+$/;
+
     if (!email.trim()) {
-      Alert.alert('Error', 'Please enter your email address.');
+      Alert.alert('Error', 'Please enter your email address or mobile number.');
+      return;
+    }
+
+    if (!emailPattern.test(email) && !mobilePattern.test(email)) {
+      Alert.alert(
+        'Error',
+        'Please enter a valid email address format or a registered mobile number.'
+      );
       return;
     }
 
@@ -40,12 +52,14 @@ const PasswordRecovery = () => {
 
   return (
     <View style={styles.container}>
-      <Text variant="headlineLarge" style={styles.title}>Password Recovery</Text>
+      <Text variant="headlineLarge" style={styles.title}>
+        Password Recovery
+      </Text>
       <Text style={styles.instructions}>
-        Enter your email to receive a password recovery link.
+        Enter your email or mobile number to receive a password recovery link.
       </Text>
       <TextInput
-        label="Email"
+        label="Email or Mobile Number"
         mode="outlined"
         value={email}
         onChangeText={setEmail}
