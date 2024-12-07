@@ -57,6 +57,15 @@ const SavedPlaces = () => {
         </View>
       </View>
 
+      {/* Add New Section */}
+      <TouchableOpacity style={styles.addNewContainer} onPress={handleAddNewPlace}>
+        <FontAwesome name="plus" size={24} color="#4B79A1" style={styles.icon} />
+        <View>
+          <Text style={styles.addNewTitle}>Add New</Text>
+          <Text style={styles.addNewSubtitle}>Save your favorite places</Text>
+        </View>
+      </TouchableOpacity>
+
       {/* Saved Places List */}
       <FlatList
         data={places}
@@ -80,15 +89,6 @@ const SavedPlaces = () => {
         }
         contentContainerStyle={{ paddingHorizontal: 15 }}
       />
-
-      {/* Add New Section */}
-      <TouchableOpacity style={styles.addNewContainer} onPress={handleAddNewPlace}>
-        <FontAwesome name="plus" size={24} color="#4B79A1" style={styles.icon} />
-        <View>
-          <Text style={styles.addNewTitle}>Add New</Text>
-          <Text style={styles.addNewSubtitle}>Save your favorite places</Text>
-        </View>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 15,
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     padding: 15,
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
