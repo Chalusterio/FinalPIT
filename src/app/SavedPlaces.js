@@ -108,19 +108,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     zIndex: 10,
   },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-  },
-  headerText: {
-    textAlign: 'center',
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#4B79A1',
-    flex: 1,
-  },
   placeItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -136,6 +123,19 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     borderWidth: 1,
     borderColor: '#ddd',
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+  },
+  headerText: {
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#4B79A1',
+    flex: 1,
   },
   placeInfo: {
     flexDirection: 'row',
