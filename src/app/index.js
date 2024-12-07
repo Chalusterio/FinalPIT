@@ -33,8 +33,15 @@ const LogIn = () => {
   };
 
   const handleLogin = () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter your mobile number or email.');
+      return;
+    }
+
+    if (!emailPattern.test(email)) {
+      Alert.alert('Error', 'Please enter a valid email address.');
       return;
     }
 
