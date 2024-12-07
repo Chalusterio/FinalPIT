@@ -9,9 +9,9 @@ const EditProfile = () => {
   const router = useRouter();
 
   const [userData, setUserData] = useState({
-    name: 'Charlene Lusterio (Cha)',
-    phone: '9979617157',
-    email: 'charlenelusterio@gmail.com',
+    name: 'Andre Jimm',
+    phone: '09972503678',
+    email: 'andre@gmail.com',
   });
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);

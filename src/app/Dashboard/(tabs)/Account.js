@@ -52,7 +52,7 @@ const Account = () => {
           style={styles.avatar}
         />
         <View style={styles.userDetails}>
-          <Text style={styles.userName}>Charlene Lusterio (Cha)</Text>
+          <Text style={styles.userName}>Andre Jimm</Text>
           <Animated.View style={{ transform: [{ scale: scaleEdit }] }}>
             <TouchableOpacity
               onPressIn={() => handlePressIn(scaleEdit)}
