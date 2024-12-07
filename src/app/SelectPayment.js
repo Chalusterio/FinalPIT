@@ -79,37 +79,54 @@ const SelectPayment = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#EAF2F8', // Matches the Transport.js background color
     padding: 10,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
-    paddingHorizontal: 5, // Add padding for proper spacing from the edges
-    paddingTop: 0, // Ensure it's not too close to the top of the screen
+    backgroundColor: '#4B79A1', // Matches the header theme
+    padding: 15,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
   },
   backButton: {
-    padding: 5,
+    paddingHorizontal: 5,
   },
   backButtonText: {
-    fontSize: 50, // Adjusted for visibility and proper size
-    color: '#007BFF',
+    fontSize: 20,
+    color: '#FFFFFF', // White for better visibility
+    fontWeight: 'bold',
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
-    flex: 1, // Make sure the title is centered by taking the remaining space
-    textAlign: 'center', // Center the title
-    marginLeft: 10, // Adds some space between the back button and the title
+    color: '#FFFFFF',
+    flex: 1,
+    textAlign: 'center',
+    marginLeft: -30, // Align the title centrally without adjusting back button spacing
   },
   locationContainer: {
     marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
   },
   locationImage: {
     width: '100%',
     height: 150,
+    borderRadius: 10,
     marginBottom: 10,
     resizeMode: 'cover',
   },
@@ -117,33 +134,36 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFFFFF',
     backgroundColor: '#4B79A1',
-    padding: 5,
-    marginBottom: 10,
+    padding: 10,
+    borderRadius: 5,
+    textAlign: 'center',
   },
   detailsContainer: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    padding: 15,
     borderRadius: 10,
+    marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
   },
   busText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#333333',
+    marginBottom: 5,
   },
   timeText: {
     fontSize: 16,
-    color: '#555',
+    color: '#555555',
+    marginBottom: 5,
   },
   priceText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#007BFF',
+    color: '#4B79A1', // Matches the theme
   },
   paymentContainer: {
     marginBottom: 20,
@@ -151,32 +171,48 @@ const styles = StyleSheet.create({
   paymentText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#333333',
+    marginBottom: 10,
   },
   paymentMethods: {
     flexDirection: 'row',
-    marginTop: 10,
+    justifyContent: 'space-between',
   },
   paymentOption: {
     flex: 1,
-    padding: 12,
-    backgroundColor: '#e0e0e0',
+    padding: 15,
+    backgroundColor: '#F7F9FC',
     marginHorizontal: 5,
-    borderRadius: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#D0D7E3',
     alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
   },
   selectedPayment: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#4B79A1', // Matches the header and theme
+    borderColor: '#FFFFFF',
+    borderWidth: 2,
   },
   bookButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#4B79A1',
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 30, // Rounded pill shape
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
   },
   bookButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });

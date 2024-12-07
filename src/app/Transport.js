@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import navigation hook
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
+import { useNavigation } from '@react-navigation/native'; // Import navigation
 
 const Transport = () => {
   const [selectedLoading, setSelectedLoading] = useState(null);
   const [selectedUnloading, setSelectedUnloading] = useState(null);
-  const navigation = useNavigation(); // Initialize navigation
+  const navigation = useNavigation(); // Hook for navigation
+
+  const handleBackPress = () => {
+    navigation.goBack(); // Navigate back to the previous screen
+  };
 
   const handleLoadingPress = (spotNumber) => {
     setSelectedLoading(spotNumber);
@@ -15,31 +20,37 @@ const Transport = () => {
     setSelectedUnloading(spotNumber);
   };
 
+  const handleBookPress = () => {
+    navigation.navigate('SelectPayment'); // Navigate to SelectPayment.js
+  };
+
   const isSelectedLoading = (spotNumber) => selectedLoading === spotNumber;
   const isSelectedUnloading = (spotNumber) => selectedUnloading === spotNumber;
 
-  const handleBookPress = () => {
-    if (selectedLoading && selectedUnloading) {
-      navigation.navigate('SelectPayment'); // Navigate to SelectPayment screen
-    } else {
-      Alert.alert('Selection Required', 'Please select both loading and unloading spots.');
-    }
-  };
-
   return (
     <View style={styles.container}>
-      {/* Header Section with Back Button */}
+      {/* Header Section */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>BOOK YOUR DESTINATION</Text>
+        <View style={styles.headerContainer}>
+          <View style={styles.titleContainer}>
+            {/* Back Button */}
+            <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+            {/* Title */}
+            <Text style={styles.title}>Transport</Text>
+          </View>
+          <View>
+            {/* Subtitle */}
+            <Text style={styles.subtitle}>Book Your Destination:{'\n'}Journey Made Simple!</Text>
+          </View>
         </View>
-        <Image
-          source={require('../../assets/bus.png')} // Adjust the path as needed
-          style={styles.busIcon}
-        />
+        <View style={styles.imageContainer}>
+          <Image
+            source={require('../../assets/bus.png')} // Correct path for the bus image
+            style={styles.busIcon}
+          />
+        </View>
       </View>
 
       {/* Loading Spots */}
@@ -49,19 +60,28 @@ const Transport = () => {
           <TouchableOpacity onPress={() => handleLoadingPress(1)}>
             <Image
               source={require('../../assets/loading1.png')}
-              style={[styles.spotImage, isSelectedLoading(1) && styles.selectedImage]}
+              style={[
+                styles.spotImage,
+                isSelectedLoading(1) && styles.selectedImage,
+              ]}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleLoadingPress(2)}>
             <Image
               source={require('../../assets/loading2.png')}
-              style={[styles.spotImage, isSelectedLoading(2) && styles.selectedImage]}
+              style={[
+                styles.spotImage,
+                isSelectedLoading(2) && styles.selectedImage,
+              ]}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleLoadingPress(3)}>
             <Image
               source={require('../../assets/loading3.png')}
-              style={[styles.spotPlaceholder, isSelectedLoading(3) && styles.selectedImage]}
+              style={[
+                styles.spotPlaceholder,
+                isSelectedLoading(3) && styles.selectedImage,
+              ]}
             />
           </TouchableOpacity>
         </View>
@@ -74,19 +94,28 @@ const Transport = () => {
           <TouchableOpacity onPress={() => handleUnloadingPress(1)}>
             <Image
               source={require('../../assets/unloading1.png')}
-              style={[styles.spotImage, isSelectedUnloading(1) && styles.selectedImage]}
+              style={[
+                styles.spotImage,
+                isSelectedUnloading(1) && styles.selectedImage,
+              ]}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleUnloadingPress(2)}>
             <Image
               source={require('../../assets/unloading2.png')}
-              style={[styles.spotPlaceholder, isSelectedUnloading(2) && styles.selectedImage]}
+              style={[
+                styles.spotPlaceholder,
+                isSelectedUnloading(2) && styles.selectedImage,
+              ]}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleUnloadingPress(3)}>
             <Image
               source={require('../../assets/unloading3.png')}
-              style={[styles.spotPlaceholder, isSelectedUnloading(3) && styles.selectedImage]}
+              style={[
+                styles.spotPlaceholder,
+                isSelectedUnloading(3) && styles.selectedImage,
+              ]}
             />
           </TouchableOpacity>
         </View>
@@ -101,37 +130,112 @@ const Transport = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#EAF2F8' },
+  container: {
+    flex: 1,
+    backgroundColor: '#EAF2F8',
+  },
   header: {
     backgroundColor: '#4B79A1',
-    paddingVertical: 30,
+    paddingVertical: 20,
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    position: 'relative',
+  },
+  headerContainer: {
+    flex: 1,
+    flexDirection: 'column', // Align the back button and title horizontally
+    alignItems: 'start', // Align them vertically
+  },
+  titleContainer: {
+    flexDirection: 'row',
   },
   backButton: {
-    position: 'absolute',  // Positioning the button in top-left
-    top: 0,               // Positioning from the top of the header
-    left: 5,              // Positioning from the left of the header
-    padding: 0,
+    marginRight: 10, // Space between the back button and the title
   },
-  backButtonText: {
-    fontSize: 50,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#FFFFFF',
+    textAlign: 'left',
   },
-  textContainer: { flex: 1, paddingRight: 20 },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#FFFFFF', textAlign: 'left', marginBottom: 10 },
-  busIcon: { width: 150, height: 150, resizeMode: 'contain' },
-  spotsContainer: { margin: 10 },
-  spotTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
-  imageRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  spotImage: { width: 100, height: 100, resizeMode: 'cover' },
-  spotPlaceholder: { width: 100, height: 100, backgroundColor: '#D3D3D3' },
-  selectedImage: { borderWidth: 3, borderColor: 'red', borderRadius: 5 },
-  bookButton: { backgroundColor: '#007BFF', padding: 15, alignItems: 'center', margin: 20, borderRadius: 5 },
-  bookButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
+  subtitle: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'start',
+    marginTop: 10, // Space between the title/image and the subtitle
+  },
+  imageContainer: {
+    width: 150, // Width of the image container
+    overflow: 'hidden',
+  },
+  busIcon: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
+  },
+  spotsContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 20,
+  },
+  spotTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  imageRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  spotImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 15,
+    backgroundColor: '#F0F4F8',
+    borderWidth: 1,
+    borderColor: '#D0D7E3',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  spotPlaceholder: {
+    width: 90,
+    height: 90,
+    borderRadius: 15,
+    backgroundColor: '#E5E9F0',
+    borderWidth: 1,
+    borderColor: '#CBD5E0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  selectedImage: {
+    borderWidth: 3,
+    borderColor: '#81BFDA',
+    borderRadius: 15,
+  },
+  bookButton: {
+    backgroundColor: '#4B79A1',
+    padding: 15,
+    alignItems: 'center',
+    margin: 20,
+    borderRadius: 12,
+  },
+  bookButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default Transport;
