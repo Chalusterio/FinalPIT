@@ -13,11 +13,11 @@ const Transport = () => {
   };
 
   const handleLoadingPress = (spotNumber) => {
-    setSelectedLoading(spotNumber);
+    setSelectedLoading((prev) => (prev === spotNumber ? null : spotNumber));
   };
 
   const handleUnloadingPress = (spotNumber) => {
-    setSelectedUnloading(spotNumber);
+    setSelectedUnloading((prev) => (prev === spotNumber ? null : spotNumber));
   };
 
   const handleBookPress = () => {
@@ -122,7 +122,14 @@ const Transport = () => {
       </View>
 
       {/* Book Now Button */}
-      <TouchableOpacity style={styles.bookButton} onPress={handleBookPress}>
+      <TouchableOpacity
+        style={[
+          styles.bookButton,
+          !(selectedLoading && selectedUnloading) && { backgroundColor: '#A9A9A9' }, // Disabled color
+        ]}
+        onPress={handleBookPress}
+        disabled={!(selectedLoading && selectedUnloading)} // Disable when not valid
+      >
         <Text style={styles.bookButtonText}>Book</Text>
       </TouchableOpacity>
     </View>
@@ -160,7 +167,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#FFFFFF',
     textAlign: 'start',
     marginTop: 10, // Space between the title/image and the subtitle
