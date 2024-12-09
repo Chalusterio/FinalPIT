@@ -35,26 +35,32 @@ const LogIn = () => {
   };
 
   const handleLogin = () => {
+    // Navigate to DashboardDriver folder if credentials match
+    if (email === 'charlene@gmail.com' && password === '123') {
+      router.replace('/DashboardDriver'); // Ensure the path matches your folder structure
+      return;
+    }
+  
     // Regex for email and numeric-only input (mobile number)
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const mobilePattern = /^[0-9]+$/;
-
+  
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter your mobile number or email.');
       return;
     }
-
+  
     if (!emailPattern.test(email) && !mobilePattern.test(email)) {
       Alert.alert('Error', 'Please enter a valid email address or mobile number.');
       return;
     }
-
+  
     if (!password.trim()) {
       Alert.alert('Error', 'Please enter your password.');
       return;
     }
-
-    router.replace('Dashboard');
+  
+    router.replace('/Dashboard'); // Default dashboard for other users
   };
 
   const handleRegister = () => {
