@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, Animated } from 'react-native';
+import { View, Animated, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
 
 const Layout = () => {
@@ -54,6 +54,20 @@ const Layout = () => {
       <Stack.Screen name="Register" options={{ title: 'Register' }} />
       <Stack.Screen name="UserProfile" options={{ title: 'User Profile' }} />
       <Stack.Screen name="PasswordRecovery" options={{ title: 'Password Recovery' }} />
+      <Stack.Screen
+        name="AvailableCommuters"
+        options={{
+          title: 'Available Commuters',
+          headerShown: true, // Show header for this screen if needed
+        }}
+      />
+      <Stack.Screen
+        name="LocationDetails"
+        options={{
+          title: 'Location Details',
+          headerShown: true, // Show header for this screen if needed
+        }}
+      />
     </Stack>
   );
 };

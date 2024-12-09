@@ -10,7 +10,7 @@ const HomeDriver = () => {
   };
 
   const handleLocationClick = () => {
-    navigation.navigate('LocationDetails'); // Navigates to the LocationDetails screen
+    navigation.navigate('AvailableCommuters'); // Navigates to the LocationDetails screen
   };
 
   return (
