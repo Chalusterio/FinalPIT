@@ -39,7 +39,11 @@ const SelectPayment = () => {
       </View>
 
       {/* Content Section */}
-      <ScrollView style={styles.overlay}>
+      <ScrollView
+        style={styles.overlay}
+        contentContainerStyle={{ paddingBottom: 100 }} // Add padding to ensure button visibility
+        keyboardShouldPersistTaps="handled" // Ensure taps are not blocked
+      >
         {/* Location Section */}
         <View style={[styles.option, styles.shadow]}>
           <Image
@@ -214,7 +218,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignSelf: 'center',
     width: '90%',
-    marginTop: 40,
+    marginTop: 0, 
   },
   bookButtonText: {
     fontSize: 16,

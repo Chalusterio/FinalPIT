@@ -44,7 +44,7 @@ const Account = () => {
   };
 
   const handleSavedPlaces = () => {
-    router.push('/SavedPlaces');
+    router.push('/EmergencyContacts');
   };
 
   return (
@@ -86,7 +86,7 @@ const Account = () => {
             onPressOut={() => handlePressOut(scalePlaces, handleSavedPlaces)}
             style={styles.option}
           >
-            <Text style={styles.optionText}>Saved Places</Text>
+            <Text style={styles.optionText}>Emergency Contacts</Text>
             <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
           </TouchableOpacity>
         </Animated.View>
