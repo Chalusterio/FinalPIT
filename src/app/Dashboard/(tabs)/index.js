@@ -26,10 +26,12 @@ const Home = () => {
 
       {/* Bus Circle and "Book Now!" Button */}
       <View style={styles.bookNowContainer}>
-        <Image
-          source={require('../../../../assets/bus-circle.png')} // Path for the bus circle icon
-          style={styles.busCircleIcon}
-        />
+        <View style={styles.busCircleContainer}>
+          <Image
+            source={require('../../../../assets/bus-circle.png')} // Path for the bus circle icon
+            style={styles.busCircleIcon}
+          />
+        </View>
         <TouchableOpacity
           style={styles.bookNowButton}
           onPress={handleBookNowClick}
@@ -77,16 +79,23 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   bookNowContainer: {
-    position: 'absolute',
-    top: 250, // Positioned just below the header
-    right: 150, // Adjust for desired horizontal position
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: -50, // Move the container slightly upward
+  },
+  busCircleContainer: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: '#D9EAFD',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20, // Space between the circle and the button
   },
   busCircleIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10, // Space between the circle and the button
+    width: 100,
+    height: 70,
     resizeMode: 'contain',
   },
   bookNowButton: {
