@@ -5,8 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 const HomeDriver = () => {
   const navigation = useNavigation();
 
-  const handleBookNowClick = () => {
-    navigation.navigate('Transport'); // Navigates to the Transport.js screen
+  const handleBusCircleClick = () => {
+    navigation.navigate('BusDetails'); // Navigates to the BusDetails screen
+  };
+
+  const handleLocationClick = () => {
+    navigation.navigate('LocationDetails'); // Navigates to the LocationDetails screen
   };
 
   return (
@@ -24,28 +28,27 @@ const HomeDriver = () => {
         />
       </View>
 
-      {/* Bus Circle, Location Icon, and "Book Now!" Button */}
-      <View style={styles.bookNowContainer}>
-        <View style={styles.iconContainer}>
-          <View style={styles.circularBackground}>
-            <Image
-              source={require('../../../../assets/bus-circle.png')} // Path for the bus circle icon
-              style={styles.icon}
-            />
-          </View>
-          <View style={[styles.circularBackground, { marginLeft: 10 }]}>
-            <Image
-              source={require('../../../../assets/location.png')} // Path for the location icon
-              style={styles.icon}
-            />
-          </View>
-        </View>
+      {/* Bus Circle and Location Icon */}
+      <View style={styles.iconContainer}>
         <TouchableOpacity
-          style={styles.bookNowButton}
-          onPress={handleBookNowClick}
+          style={styles.circularBackground}
+          onPress={handleBusCircleClick}
           activeOpacity={0.8}
         >
-          <Text style={styles.bookNowText}>Book Now!</Text>
+          <Image
+            source={require('../../../../assets/bus-circle.png')} // Path for the bus circle icon
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.circularBackground, { marginLeft: 10 }]}
+          onPress={handleLocationClick}
+          activeOpacity={0.8}
+        >
+          <Image
+            source={require('../../../../assets/location.png')} // Path for the location icon
+            style={styles.icon}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -86,16 +89,11 @@ const styles = StyleSheet.create({
     height: 150,
     resizeMode: 'contain',
   },
-  bookNowContainer: {
-    position: 'absolute',
-    top: 250, // Positioned just below the header
-    right: 150, // Adjust for desired horizontal position
-    alignItems: 'center',
-  },
   iconContainer: {
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10, // Space between the icons and the button
+    marginTop: 50, // Adjust for desired vertical position
   },
   circularBackground: {
     width: 80,
@@ -109,19 +107,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     resizeMode: 'contain',
-  },
-  bookNowButton: {
-    backgroundColor: '#4B79A1',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    elevation: 10, // Add shadow effect
-  },
-  bookNowText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
   },
 });
 

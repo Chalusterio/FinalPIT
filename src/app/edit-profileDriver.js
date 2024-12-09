@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Animated, TouchableOpacity, Image, Alert, TextInput } from 'react-native';
+import { View, StyleSheet, Animated, TouchableOpacity, Image, Alert, TextInput, Dimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
-const EditProfileDriver = () => {
+const { width, height } = Dimensions.get('window');
+
+const EditProfileAccount = () => {
   const router = useRouter();
 
   const [userData, setUserData] = useState({
@@ -16,7 +18,6 @@ const EditProfileDriver = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
 
-  // Animation states
   const [scaleClose] = useState(new Animated.Value(1));
   const [scaleSave] = useState(new Animated.Value(1));
 
@@ -61,7 +62,7 @@ const EditProfileDriver = () => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [1, 1], // Square image crop
+        aspect: [1, 1],
         quality: 0.8,
       });
 
@@ -86,7 +87,7 @@ const EditProfileDriver = () => {
             onPressIn={() => handlePressIn(scaleClose)}
             onPressOut={() => handlePressOut(scaleClose, () => router.back())}
           >
-            <MaterialIcons name="close" size={28} color="#4B79A1" />
+            <MaterialIcons name="close" size={width * 0.07} color="#4B79A1" />
           </TouchableOpacity>
         </Animated.View>
         <Text style={styles.headerText}>{isEditing ? 'Edit Profile' : 'Profile'}</Text>
@@ -150,68 +151,67 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAF2F8',
   },
-header: {
-  height: 100,
-  backgroundColor: '#FFFFFF',
-  flexDirection: 'row',
-  alignItems: 'center', // Centers items vertically
-  justifyContent: 'space-between', // Creates space between the close button, header text, and edit/save button
-  paddingHorizontal: 15,
-  paddingTop: 50, // Adjusts header content to account for status bar or other spacing
-  borderBottomWidth: 1,
-  borderBottomColor: '#ddd',
-},
-
+  header: {
+    height: height * 0.12,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.04,
+    paddingTop: height * 0.03,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
   headerText: {
-    fontSize: 22,
+    fontSize: width * 0.06,
     fontWeight: '700',
     color: '#4B79A1',
     textAlign: 'center',
     flex: 1,
   },
   editText: {
-    fontSize: 16,
+    fontSize: width * 0.045,
     fontWeight: '600',
     color: '#4B79A1',
   },
   banner: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 40,
+    paddingVertical: height * 0.05,
     backgroundColor: '#4B79A1',
-    borderBottomLeftRadius: 50,
-    borderBottomRightRadius: 50,
+    borderBottomLeftRadius: width * 0.1,
+    borderBottomRightRadius: width * 0.1,
   },
   avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: width * 0.3,
+    height: width * 0.3,
+    borderRadius: (width * 0.3) / 2,
     borderWidth: 4,
     borderColor: '#FFFFFF',
     backgroundColor: '#E5E5E5',
   },
   changeText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    marginTop: 10,
+    fontSize: width * 0.04,
+    marginTop: height * 0.01,
     fontWeight: '500',
   },
   profileDetails: {
-    paddingHorizontal: 20,
-    marginTop: 30,
+    paddingHorizontal: width * 0.05,
+    marginTop: height * 0.03,
   },
   label: {
-    fontSize: 14,
+    fontSize: width * 0.04,
     fontWeight: '600',
     color: '#4B79A1',
-    marginBottom: 8,
+    marginBottom: height * 0.01,
   },
   input: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 15,
-    fontSize: 16,
-    marginBottom: 15,
+    borderRadius: width * 0.03,
+    padding: height * 0.02,
+    fontSize: width * 0.045,
+    marginBottom: height * 0.02,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -220,5 +220,4 @@ header: {
   },
 });
 
-
-export default EditProfileDriver;
+export default EditProfileAccount;

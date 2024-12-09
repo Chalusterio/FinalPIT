@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Animated, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, Animated, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 const AccountDriver = () => {
   const router = useRouter();
@@ -45,68 +48,74 @@ const AccountDriver = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.userInfoContainer}>
-        <Image
-          source={require('../../../../assets/avatar.png')}
-          style={styles.avatar}
-        />
-        <View style={styles.userDetails}>
-          <Text style={styles.userName}>Charlene Lusterio</Text>
-          <Animated.View style={{ transform: [{ scale: scaleEdit }] }}>
-            <TouchableOpacity
-              onPressIn={() => handlePressIn(scaleEdit)}
-              onPressOut={() => handlePressOut(scaleEdit, handleEditProfile)}
-              style={styles.editButton}
-            >
-              <MaterialIcons name="edit" size={20} color="#4B79A1" />
-            </TouchableOpacity>
-          </Animated.View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.userInfoContainer}>
+          <Image
+            source={require('../../../../assets/avatar.png')}
+            style={styles.avatar}
+          />
+          <View style={styles.userDetails}>
+            <Text style={styles.userName}>Charlene Lusterio</Text>
+            <Animated.View style={{ transform: [{ scale: scaleEdit }] }}>
+              <TouchableOpacity
+                onPressIn={() => handlePressIn(scaleEdit)}
+                onPressOut={() => handlePressOut(scaleEdit, handleEditProfile)}
+                style={styles.editButton}
+              >
+                <MaterialIcons name="edit" size={20} color="#4B79A1" />
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
         </View>
+
+        <Text style={styles.sectionTitle}>My Account</Text>
+        <Animated.View style={{ transform: [{ scale: scalePayment }] }}>
+          <TouchableOpacity
+            onPressIn={() => handlePressIn(scalePayment)}
+            onPressOut={() => handlePressOut(scalePayment, handleWalapa)}
+            style={styles.option}
+          >
+            <Text style={styles.optionText}>Wala pa</Text>
+            <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
+          </TouchableOpacity>
+        </Animated.View>
+        <Animated.View style={{ transform: [{ scale: scalePlaces }] }}>
+          <TouchableOpacity
+            onPressIn={() => handlePressIn(scalePlaces)}
+            onPressOut={() => handlePressOut(scalePlaces, handleWalapa1)}
+            style={styles.option}
+          >
+            <Text style={styles.optionText}>Wala pa1</Text>
+            <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
+          </TouchableOpacity>
+        </Animated.View>
+
+        <Text style={styles.sectionTitle}>General</Text>
+        <Animated.View style={{ transform: [{ scale: scaleSettings }] }}>
+          <TouchableOpacity
+            onPressIn={() => handlePressIn(scaleSettings)}
+            onPressOut={() => handlePressOut(scaleSettings, handleSettings)}
+            style={styles.option}
+          >
+            <Text style={styles.optionText}>Settings</Text>
+            <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
+          </TouchableOpacity>
+        </Animated.View>
       </View>
-
-      <Text style={styles.sectionTitle}>My Account</Text>
-      <Animated.View style={{ transform: [{ scale: scalePayment }] }}>
-        <TouchableOpacity
-          onPressIn={() => handlePressIn(scalePayment)}
-          onPressOut={() => handlePressOut(scalePayment, handleWalapa)}
-          style={styles.option}
-        >
-          <Text style={styles.optionText}>Wala pa</Text>
-          <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
-        </TouchableOpacity>
-      </Animated.View>
-      <Animated.View style={{ transform: [{ scale: scalePlaces }] }}>
-        <TouchableOpacity
-          onPressIn={() => handlePressIn(scalePlaces)}
-          onPressOut={() => handlePressOut(scalePlaces, handleWalapa1)}
-          style={styles.option}
-        >
-          <Text style={styles.optionText}>Wala pa1</Text>
-          <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
-        </TouchableOpacity>
-      </Animated.View>
-
-      <Text style={styles.sectionTitle}>General</Text>
-      <Animated.View style={{ transform: [{ scale: scaleSettings }] }}>
-        <TouchableOpacity
-          onPressIn={() => handlePressIn(scaleSettings)}
-          onPressOut={() => handlePressOut(scaleSettings, handleSettings)}
-          style={styles.option}
-        >
-          <Text style={styles.optionText}>Settings</Text>
-          <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
-        </TouchableOpacity>
-      </Animated.View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#EAF2F8',
+  },
   container: {
     flex: 1,
     backgroundColor: '#EAF2F8',
-    padding: 20,
+    paddingHorizontal: width * 0.05, // Responsive padding
     paddingTop: 50,
   },
   userInfoContainer: {
