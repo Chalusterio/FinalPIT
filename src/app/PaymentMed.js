@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Animated, TouchableOpacity, Dimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+
+const { width, height } = Dimensions.get('window');
 
 const PaymentMed = () => {
   const router = useRouter();
@@ -33,12 +35,10 @@ const PaymentMed = () => {
   };
 
   const handleAddPaymentMethod = () => {
-    // Add your logic for adding a payment method here
     alert("Add Payment Method clicked!");
   };
 
   const handleAddGcash = () => {
-    // Add your logic for adding GCash here
     alert("Add GCash clicked!");
   };
 
@@ -92,10 +92,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAF2F8',
   },
   header: {
-    height: 100,
+    height: height * 0.12, // Responsive height
     backgroundColor: '#FFFFFF',
     justifyContent: 'flex-end',
-    paddingBottom: 10,
+    paddingBottom: height * 0.02,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     position: 'absolute',
@@ -108,25 +108,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
+    paddingHorizontal: width * 0.04, // Responsive padding
   },
   headerText: {
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: width * 0.06, // Responsive font size
     fontWeight: '700',
     color: '#4B79A1',
     flex: 1,
   },
   overlay: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 120,
+    paddingHorizontal: width * 0.05, // Responsive padding
+    paddingTop: height * 0.15, // Space for header
   },
   option: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
+    borderRadius: width * 0.03, // Responsive border radius
+    padding: height * 0.02, // Responsive padding
+    marginBottom: height * 0.03, // Responsive margin
   },
   shadow: {
     elevation: 3,
@@ -136,14 +136,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   optionText: {
-    fontSize: 18,
+    fontSize: width * 0.045, // Responsive font size
     fontWeight: '500',
     color: '#4B79A1',
     textAlign: 'center',
   },
   gcashText: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: height * 0.01, // Responsive margin
+    fontSize: width * 0.04, // Responsive font size
     color: '#4B79A1',
     textAlign: 'center',
   },

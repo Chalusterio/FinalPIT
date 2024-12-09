@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, Animated, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Alert, Animated, TouchableOpacity, Dimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+
+const { width, height } = Dimensions.get('window');
 
 const Settings = () => {
   const router = useRouter();
@@ -58,8 +60,10 @@ const Settings = () => {
             <TouchableOpacity
               onPressIn={handlePressInClose}
               onPressOut={handlePressOutClose}
+              accessibilityLabel="Close settings"
+              accessible
             >
-              <MaterialIcons name="close" size={28} color="#4B79A1" />
+              <MaterialIcons name="close" size={width * 0.07} color="#4B79A1" />
             </TouchableOpacity>
           </Animated.View>
           <Text style={styles.headerText}>Settings</Text>
@@ -71,19 +75,23 @@ const Settings = () => {
         <TouchableOpacity
           onPress={handleChangePassword}
           style={[styles.option, styles.shadow]}
+          accessibilityLabel="Change your password"
+          accessible
         >
           <View style={styles.optionRow}>
             <Text style={styles.optionText}>Change Password</Text>
-            <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
+            <MaterialIcons name="chevron-right" size={width * 0.06} color="#4B79A1" />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleDeleteAccount}
           style={[styles.option, styles.shadow]}
+          accessibilityLabel="Delete your account"
+          accessible
         >
           <View style={styles.optionRow}>
             <Text style={styles.optionText}>Delete Account</Text>
-            <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
+            <MaterialIcons name="chevron-right" size={width * 0.06} color="#4B79A1" />
           </View>
         </TouchableOpacity>
 
@@ -92,6 +100,8 @@ const Settings = () => {
             onPressIn={handlePressInLogout}
             onPressOut={handlePressOutLogout}
             style={[styles.logoutButton, styles.shadow]}
+            accessibilityLabel="Log out of the application"
+            accessible
           >
             <Text style={styles.logoutButtonText}>Log Out</Text>
           </TouchableOpacity>
@@ -104,44 +114,40 @@ const Settings = () => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: '#EAF2F8', // Restored background color
+    backgroundColor: '#EAF2F8',
   },
   header: {
-    height: 100, // Original header height
+    height: height * 0.12, // Responsive height
     backgroundColor: '#FFFFFF',
     justifyContent: 'flex-end',
-    paddingBottom: 10,
+    paddingBottom: height * 0.02,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
     zIndex: 10,
   },
   headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
+    paddingHorizontal: width * 0.04,
   },
   headerText: {
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: width * 0.06, // Responsive font size
     fontWeight: '700',
     color: '#4B79A1',
     flex: 1,
   },
   overlay: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 120, // Ensures content doesn't overlap with the header
+    paddingHorizontal: width * 0.05,
+    paddingTop: height * 0.02, // Reduced top padding to move buttons closer to the header
   },
   option: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
+    borderRadius: width * 0.03,
+    padding: height * 0.02,
+    marginBottom: height * 0.02, // Adjusted spacing between options
   },
   shadow: {
     elevation: 3,
@@ -156,24 +162,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionText: {
-    fontSize: 18,
+    fontSize: width * 0.045,
     fontWeight: '500',
     color: '#4B79A1',
   },
   logoutButton: {
     backgroundColor: '#4B79A1',
-    borderRadius: 25,
-    paddingVertical: 12,
+    borderRadius: width * 0.05,
+    paddingVertical: height * 0.015,
     alignSelf: 'center',
     width: '90%',
-    marginTop: 40,
+    marginTop: height * 0.03, // Spacing for the logout button
   },
   logoutButtonText: {
-    fontSize: 16,
+    fontSize: width * 0.045,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
   },
 });
+
+
 
 export default Settings;

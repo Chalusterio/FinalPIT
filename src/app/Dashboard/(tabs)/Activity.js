@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome for icons
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+const { width } = Dimensions.get('window');
 
 const Activity = () => {
   const [bookings, setBookings] = useState([]);
@@ -23,7 +25,7 @@ const Activity = () => {
   }, []);
 
   const renderBookingItem = ({ item }) => (
-    <TouchableOpacity style={styles.bookingItem}>
+    <TouchableOpacity style={styles.bookingItem} accessibilityLabel={`Booking item: ${item.title}`}>
       <View style={styles.bookingInfo}>
         <FontAwesome name="bus" size={24} color="black" style={styles.busIcon} />
         <View>
@@ -62,6 +64,7 @@ const Activity = () => {
       ) : (
         <View style={styles.noBookingsContainer}>
           <Text style={styles.noBookingsText}>You have no bookings yet.</Text>
+          <Text style={styles.noBookingsSubText}>Start your journey by booking your first ride!</Text>
         </View>
       )}
     </View>
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EAF2F8',
-    padding: 20,
+    padding: width * 0.05, // Responsive padding
   },
   loaderContainer: {
     flex: 1,
@@ -111,10 +114,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: '#D6E6F2',
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     elevation: 4,
   },
   bookingInfo: {
@@ -151,8 +150,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   noBookingsText: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#4B79A1',
+    marginBottom: 10,
+  },
+  noBookingsSubText: {
+    fontSize: 16,
+    color: '#666',
   },
 });
 

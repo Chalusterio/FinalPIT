@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, Animated, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, Alert, Animated, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
+
+const { width, height } = Dimensions.get('window');
 
 const ChangePass = () => {
   const router = useRouter();
@@ -110,23 +112,23 @@ const ChangePass = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05, // Responsive padding
     backgroundColor: '#EAF2F8',
     justifyContent: 'center',
   },
   headerText: {
-    fontSize: 24,
+    fontSize: width * 0.06, // Responsive font size
     fontWeight: '700',
     color: '#4B79A1',
-    marginBottom: 30,
+    marginBottom: height * 0.03,
     textAlign: 'center',
   },
   input: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 15,
-    fontSize: 16,
-    marginBottom: 15,
+    padding: height * 0.02,
+    fontSize: width * 0.04, // Responsive font size
+    marginBottom: height * 0.02,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -135,10 +137,10 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#4B79A1',
-    borderRadius: 25,
-    paddingVertical: 12,
+    borderRadius: width * 0.05,
+    paddingVertical: height * 0.015,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: height * 0.03,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -146,14 +148,14 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   submitButtonText: {
-    fontSize: 16,
+    fontSize: width * 0.045, // Responsive font size
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   cancelButton: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 25,
-    paddingVertical: 12,
+    borderRadius: width * 0.05,
+    paddingVertical: height * 0.015,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#4B79A1',
@@ -164,7 +166,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cancelButtonText: {
-    fontSize: 16,
+    fontSize: width * 0.045, // Responsive font size
     fontWeight: 'bold',
     color: '#4B79A1',
   },

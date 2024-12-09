@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Animated, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Animated, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+
+const { width, height } = Dimensions.get('window');
 
 const SavedPlaces = () => {
   const router = useRouter();
@@ -49,8 +51,10 @@ const SavedPlaces = () => {
             <TouchableOpacity
               onPressIn={() => handlePressIn(scaleClose)}
               onPressOut={() => handlePressOut(scaleClose, handleClose)}
+              accessibilityLabel="Close"
+              accessible
             >
-              <MaterialIcons name="close" size={28} color="#4B79A1" />
+              <MaterialIcons name="close" size={width * 0.07} color="#4B79A1" />
             </TouchableOpacity>
           </Animated.View>
           <Text style={styles.headerText}>Saved Places</Text>
@@ -58,8 +62,13 @@ const SavedPlaces = () => {
       </View>
 
       {/* Add New Section */}
-      <TouchableOpacity style={styles.addNewContainer} onPress={handleAddNewPlace}>
-        <FontAwesome name="plus" size={24} color="#4B79A1" style={styles.icon} />
+      <TouchableOpacity
+        style={styles.addNewContainer}
+        onPress={handleAddNewPlace}
+        accessibilityLabel="Add a new saved place"
+        accessible
+      >
+        <FontAwesome name="plus" size={width * 0.06} color="#4B79A1" style={styles.icon} />
         <View>
           <Text style={styles.addNewTitle}>Add New</Text>
           <Text style={styles.addNewSubtitle}>Save your favorite places</Text>
@@ -73,21 +82,25 @@ const SavedPlaces = () => {
         renderItem={({ item, index }) => (
           <View style={styles.placeItem}>
             <View style={styles.placeInfo}>
-              <FontAwesome name="home" size={24} color="#4B79A1" style={styles.icon} />
+              <FontAwesome name="home" size={width * 0.06} color="#4B79A1" style={styles.icon} />
               <View>
                 <Text style={styles.placeTitle}>{item.title}</Text>
                 <Text style={styles.placeLocation}>{item.location}</Text>
               </View>
             </View>
-            <TouchableOpacity onPress={() => handleDeletePlace(index)}>
-              <MaterialIcons name="delete" size={24} color="#FF5C5C" />
+            <TouchableOpacity
+              onPress={() => handleDeletePlace(index)}
+              accessibilityLabel={`Delete ${item.title}`}
+              accessible
+            >
+              <MaterialIcons name="delete" size={width * 0.06} color="#FF5C5C" />
             </TouchableOpacity>
           </View>
         )}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No places saved yet. Add some!</Text>
         }
-        contentContainerStyle={{ paddingHorizontal: 15 }}
+        contentContainerStyle={{ paddingHorizontal: width * 0.04 }}
       />
     </View>
   );
@@ -99,23 +112,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAF2F8',
   },
   header: {
-    height: 100,
+    height: height * 0.12, // Responsive height
     backgroundColor: '#FFFFFF',
     justifyContent: 'flex-end',
-    paddingBottom: 10,
+    paddingBottom: height * 0.02,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    position: 'relative',
     zIndex: 10,
   },
   placeItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: height * 0.02,
     backgroundColor: '#FFFFFF',
-    marginBottom: 10,
-    borderRadius: 8,
+    marginBottom: height * 0.015,
+    borderRadius: width * 0.03,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -128,11 +140,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
+    paddingHorizontal: width * 0.04,
   },
   headerText: {
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: width * 0.06,
     fontWeight: '700',
     color: '#4B79A1',
     flex: 1,
@@ -142,26 +154,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginRight: 10,
+    marginRight: width * 0.03,
   },
   placeTitle: {
-    fontSize: 16,
+    fontSize: width * 0.045,
     fontWeight: '600',
     color: '#4B79A1',
   },
   placeLocation: {
-    fontSize: 14,
+    fontSize: width * 0.04,
     color: '#6A6A6A',
   },
   addNewContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 15,
-    marginTop: 10,
-    marginBottom: 10,
-    padding: 15,
+    marginHorizontal: width * 0.04,
+    marginTop: height * 0.02,
+    marginBottom: height * 0.02,
+    padding: height * 0.02,
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    borderRadius: width * 0.03,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -172,19 +184,19 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   addNewTitle: {
-    fontSize: 16,
+    fontSize: width * 0.045,
     fontWeight: '600',
     color: '#4B79A1',
   },
   addNewSubtitle: {
-    fontSize: 14,
+    fontSize: width * 0.04,
     color: '#6A6A6A',
   },
   emptyText: {
     textAlign: 'center',
     color: '#aaa',
-    fontSize: 16,
-    marginTop: 20,
+    fontSize: width * 0.045,
+    marginTop: height * 0.05,
   },
 });
 
