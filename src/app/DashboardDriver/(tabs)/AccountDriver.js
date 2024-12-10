@@ -36,7 +36,7 @@ const AccountDriver = () => {
   };
 
   const handleSettings = () => {
-    router.push('/Settings');
+    router.push('/SettingsDriver');
   };
 
   const handleWalapa = () => {
@@ -44,7 +44,7 @@ const AccountDriver = () => {
   };
 
   const handleWalapa1 = () => {
-    router.push('/Walapa1');
+    router.push('/EmeConDriver');
   };
 
   return (
@@ -86,7 +86,7 @@ const AccountDriver = () => {
             onPressOut={() => handlePressOut(scalePlaces, handleWalapa1)}
             style={styles.option}
           >
-            <Text style={styles.optionText}>Wala pa1</Text>
+            <Text style={styles.optionText}>Emergency Contacts</Text>
             <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
           </TouchableOpacity>
         </Animated.View>
