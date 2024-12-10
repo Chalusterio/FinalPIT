@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -6,11 +6,11 @@ const HomeDriver = () => {
   const navigation = useNavigation();
 
   const handleBusCircleClick = () => {
-    navigation.navigate('BusDetails'); // Navigates to the BusDetails screen
+    navigation.navigate('AvailableBus'); // Navigates to the AvailableBus screen
   };
 
   const handleLocationClick = () => {
-    navigation.navigate('AvailableCommuters'); // Navigates to the LocationDetails screen
+    navigation.navigate('AvailableCommuters'); // Navigates to the AvailableCommuters screen
   };
 
   return (
