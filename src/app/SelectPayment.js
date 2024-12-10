@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
+  Alert,
   View,
   Text,
   TouchableOpacity,
@@ -10,18 +11,26 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const SelectPayment = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [isConfirmed, setIsConfirmed] = useState(false); // Modal visibility state
+  const [route, setRoute] = useState('SM Downtown Premiere - Dunkin Gusa'); // Example route
   const navigation = useNavigation();
 
-  // Handle Payment Selection
+  // Example for backend fetch
+  useEffect(() => {
+    // Simulated backend fetch - replace with actual API call when needed
+    setTimeout(() => {
+      setRoute('SM Downtown Premiere - Dunkin Gusa'); // Set example route
+    }, 1000);
+  }, []);
+
   const handlePaymentSelect = (method) => {
     setSelectedPayment(method);
   };
 
-  // Handle Booking Confirmation
   const handleBook = () => {
     if (selectedPayment) {
       setIsConfirmed(true); // Show the confirmation modal
@@ -30,10 +39,9 @@ const SelectPayment = () => {
     }
   };
 
-  // Close Confirmation Modal
   const closeModal = () => {
     setIsConfirmed(false); // Close modal
-    navigation.goBack('Home'); // Navigate back after confirming the booking
+    navigation.navigate('Dashboard/(tabs)', { screen: 'index' }); // Navigate to index.js in Dashboard (tabs)
   };
 
   return (
@@ -67,8 +75,10 @@ const SelectPayment = () => {
 
         {/* Bus & Fare Details */}
         <View style={[styles.card, styles.shadow]}>
-          <Text style={styles.text}>Bus</Text>
-          <Text style={styles.price}>₱12.00</Text>
+          <View style={styles.busInfo}>
+            <Text style={styles.text}>Bus</Text>
+            <Text style={styles.price}>₱12.00</Text>
+          </View>
         </View>
 
         {/* Payment Selection */}
@@ -125,13 +135,25 @@ const SelectPayment = () => {
               <View style={styles.busInfo}>
                 <MaterialIcons name="directions-bus" size={28} color="#4B79A1" />
                 <View style={styles.busDetails}>
-                  <Text style={styles.text}>Bus</Text>
+                  {route && (
+                    <>
+                      {/* Split the route into two lines */}
+                      <Text style={styles.routeText}>
+                        {route.split(' - ')[0]}
+                      </Text>
+                      <Text style={styles.routeText}>
+                        - {route.split(' - ')[1]}
+                      </Text>
+                    </>
+                  )}
                 </View>
                 <Text style={styles.price}>₱12.00</Text>
               </View>
             </View>
-            <Text style={styles.confirmText}>Your Ticket has been confirmed!</Text>
-            <MaterialIcons name="check-circle" size={60} color="green" />
+            <Text style={styles.confirmText}>
+              Your Booking has been confirmed!
+            </Text>
+            <FontAwesome6 name="check-circle" size={60} color="#A1EEBD" />
             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
@@ -155,6 +177,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    elevation: 2,
   },
   headerContent: {
     flexDirection: 'row',
@@ -163,8 +186,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   headerText: {
-    fontSize: 22,
-    fontWeight: '700',
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#4B79A1',
     flex: 1,
     textAlign: 'center',
@@ -178,26 +201,27 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 15,
     marginBottom: 20,
-  },
-  shadow: {
-    elevation: 3,
+    elevation: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowRadius: 6,
   },
-  text: {
-    fontSize: 18,
+  busInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  routeText: {
+    fontSize: 16,
     fontWeight: '500',
     color: '#4B79A1',
-    marginBottom: 5,
-  },
-  subText: {
-    fontSize: 16,
-    color: '#555555',
+    textAlign: 'center',
+    marginTop: 2,
   },
   price: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#4B79A1',
     marginTop: 5,
@@ -207,22 +231,25 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 12,
     marginBottom: 10,
+    borderColor: '#ddd',
+    borderWidth: 1,
   },
   paymentOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginTop: 15,
   },
   paymentButton: {
     flex: 1,
     padding: 15,
     backgroundColor: '#F7F9FC',
     marginHorizontal: 5,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: '#D0D7E3',
     borderWidth: 1,
+    borderColor: '#D0D7E3',
+    transform: [{ scale: 1 }],
   },
   paymentText: {
     fontSize: 16,
@@ -233,6 +260,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4B79A1',
     borderColor: '#FFFFFF',
     borderWidth: 2,
+    elevation: 3,
   },
   selectedText: {
     color: '#FFFFFF',
@@ -244,16 +272,15 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignSelf: 'center',
     width: '90%',
-    marginTop: 15,
+    marginTop: 20,
+    elevation: 2,
   },
   bookButtonText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
   },
-
-  // Modal styles
   modalBackground: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -263,9 +290,13 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '90%',
     backgroundColor: '#FFFFFF',
-    borderRadius: 15,
+    borderRadius: 20,
     padding: 20,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
   modalCard: {
     backgroundColor: '#FFFFFF',
@@ -273,9 +304,13 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 20,
     width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
   confirmText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: '#4B79A1',
     marginVertical: 15,
@@ -283,13 +318,13 @@ const styles = StyleSheet.create({
   closeButton: {
     marginTop: 20,
     backgroundColor: '#4B79A1',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
     borderRadius: 10,
   },
   closeButtonText: {
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontWeight: '700',
     fontSize: 16,
   },
 });
