@@ -37,25 +37,37 @@ const LogIn = () => {
     });
   };
 
+judi
   const handleLogin = async () => {
     // Regex for email and mobile number validation
+
+  const handleLogin = () => {
+    // Navigate to DashboardDriver folder if credentials match
+    if (email === 'charlene@gmail.com' && password === '123') {
+      router.replace('/DashboardDriver'); // Ensure the path matches your folder structure
+      return;
+    }
+  
+    // Regex for email and numeric-only input (mobile number)
+juditest
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const mobilePattern = /^[0-9]+$/;
-
+  
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter your mobile number or email.');
       return;
     }
-
+  
     if (!emailPattern.test(email) && !mobilePattern.test(email)) {
       Alert.alert('Error', 'Please enter a valid email address or mobile number.');
       return;
     }
-
+  
     if (!password.trim()) {
       Alert.alert('Error', 'Please enter your password.');
       return;
     }
+judi
 
     try {
       // Firebase Authentication logic
@@ -68,6 +80,10 @@ const LogIn = () => {
       setError(err.message);  // Set the error message if login fails
       Alert.alert('Login Failed', 'Please check your credentials and try again.');
     }
+
+  
+    router.replace('/Dashboard'); // Default dashboard for other users
+juditest
   };
 
   const handleRegister = () => {

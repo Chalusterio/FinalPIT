@@ -5,29 +5,28 @@ import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
-const ChangePass = () => {
+const DeleteAccDriver = () => {
   const router = useRouter();
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   // Animation states for buttons
-  const [scaleSubmit] = useState(new Animated.Value(1));
+  const [scaleDelete] = useState(new Animated.Value(1));
   const [scaleCancel] = useState(new Animated.Value(1));
 
-  const handlePressInSubmit = () => {
-    Animated.spring(scaleSubmit, {
+  const handlePressInDelete = () => {
+    Animated.spring(scaleDelete, {
       toValue: 0.95,
       useNativeDriver: true,
     }).start();
   };
 
-  const handlePressOutSubmit = () => {
-    Animated.spring(scaleSubmit, {
+  const handlePressOutDelete = () => {
+    Animated.spring(scaleDelete, {
       toValue: 1,
       useNativeDriver: true,
     }).start(() => {
-      handleSubmit();
+      handleDeleteAccount();
     });
   };
 
@@ -43,40 +42,40 @@ const ChangePass = () => {
       toValue: 1,
       useNativeDriver: true,
     }).start(() => {
-      router.back();
+      router.push('/SettingsDriver');
     });
   };
 
-  const handleSubmit = () => {
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      Alert.alert('Error', 'All fields are required');
+  const handleDeleteAccount = () => {
+    if (!password || !confirmPassword) {
+      Alert.alert('Error', 'Both password fields are required');
       return;
     }
-    if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'New password and confirm password must match');
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
       return;
     }
 
-    Alert.alert('Success', 'Your password has been changed successfully');
-    router.replace('/Settings');
+    Alert.alert('Success', 'Your account has been deleted successfully', [
+      {
+        text: 'OK',
+        onPress: () => router.replace('/'), // Navigate to index.js
+      },
+    ]);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Change Password</Text>
+      <Text style={styles.headerText}>Delete Account</Text>
+      <Text style={styles.messageText}>
+        Please enter your password to confirm account deletion. This action cannot be undone.
+      </Text>
       <TextInput
         style={styles.input}
-        placeholder="Old Password"
+        placeholder="Password"
         secureTextEntry
-        value={oldPassword}
-        onChangeText={setOldPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="New Password"
-        secureTextEntry
-        value={newPassword}
-        onChangeText={setNewPassword}
+        value={password}
+        onChangeText={setPassword}
       />
       <TextInput
         style={styles.input}
@@ -86,13 +85,15 @@ const ChangePass = () => {
         onChangeText={setConfirmPassword}
       />
 
-      <Animated.View style={{ transform: [{ scale: scaleSubmit }] }}>
+      <Animated.View style={{ transform: [{ scale: scaleDelete }] }}>
         <TouchableOpacity
-          onPressIn={handlePressInSubmit}
-          onPressOut={handlePressOutSubmit}
-          style={styles.submitButton}
+          onPressIn={handlePressInDelete}
+          onPressOut={handlePressOutDelete}
+          style={styles.deleteButton}
+          accessibilityLabel="Confirm account deletion"
+          accessible
         >
-          <Text style={styles.submitButtonText}>Submit</Text>
+          <Text style={styles.deleteButtonText}>Confirm Delete</Text>
         </TouchableOpacity>
       </Animated.View>
 
@@ -101,6 +102,8 @@ const ChangePass = () => {
           onPressIn={handlePressInCancel}
           onPressOut={handlePressOutCancel}
           style={styles.cancelButton}
+          accessibilityLabel="Cancel account deletion"
+          accessible
         >
           <Text style={styles.cancelButtonText}>Cancel</Text>
         </TouchableOpacity>
@@ -112,22 +115,28 @@ const ChangePass = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: width * 0.05, // Responsive padding
     backgroundColor: '#EAF2F8',
+    paddingHorizontal: width * 0.05, // Responsive padding
     justifyContent: 'center',
   },
   headerText: {
     fontSize: width * 0.06, // Responsive font size
     fontWeight: '700',
     color: '#4B79A1',
-    marginBottom: height * 0.03,
+    marginBottom: height * 0.02,
+    textAlign: 'center',
+  },
+  messageText: {
+    fontSize: width * 0.045, // Responsive font size
+    color: '#4B79A1',
+    marginBottom: height * 0.04,
     textAlign: 'center',
   },
   input: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: height * 0.02,
-    fontSize: width * 0.04, // Responsive font size
+    borderRadius: width * 0.03, // Responsive border radius
+    padding: height * 0.02, // Responsive padding
+    fontSize: width * 0.045, // Responsive font size
     marginBottom: height * 0.02,
     elevation: 3,
     shadowColor: '#000',
@@ -135,7 +144,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
-  submitButton: {
+  deleteButton: {
     backgroundColor: '#4B79A1',
     borderRadius: width * 0.05,
     paddingVertical: height * 0.015,
@@ -147,7 +156,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 5,
   },
-  submitButtonText: {
+  deleteButtonText: {
     fontSize: width * 0.045, // Responsive font size
     fontWeight: 'bold',
     color: '#FFFFFF',
@@ -172,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangePass;
+export default DeleteAccDriver;

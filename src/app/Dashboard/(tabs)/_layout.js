@@ -1,30 +1,22 @@
-import React from 'react';  
+import React from 'react';
+import { Platform, StyleSheet } from 'react-native';
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons'; // Import for Activity icon
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const DashboardLayout = () => {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#EAF2F8', // Matches the background theme of index.js
-          borderTopWidth: 0, // Remove border
-          shadowColor: '#000', // Shadow color
-          shadowOffset: { width: 0, height: -1 }, // Offset for the shadow
-          shadowOpacity: 0.1, // Shadow opacity (adjust for more/less shadow)
-          shadowRadius: 3, // Blur radius for shadow
-          elevation: 5, // Elevation for Android shadow
-          paddingBottom: 5,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: 'bold',
-        },
-        tabBarActiveTintColor: '#4B79A1', // Active tab color
-        tabBarInactiveTintColor: '#808080', // Inactive tab color
+        tabBarStyle: [
+          styles.tabBarStyle,
+          Platform.OS === 'ios' ? styles.iosShadow : styles.androidElevation,
+        ],
+        tabBarLabelStyle: styles.tabBarLabelStyle,
+        tabBarActiveTintColor: '#4B79A1',
+        tabBarInactiveTintColor: '#808080',
       }}
     >
       <Tabs.Screen
@@ -32,9 +24,9 @@ const DashboardLayout = () => {
         options={{
           title: 'Home',
           tabBarLabel: 'Home',
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
-              name={focused ? 'home' : 'home-outline'} // Active and inactive icons
+              name={focused ? 'home' : 'home-outline'}
               color={color}
               size={24}
             />
@@ -46,12 +38,8 @@ const DashboardLayout = () => {
         options={{
           title: 'Activity',
           tabBarLabel: 'Activity',
-          tabBarIcon: ({ color, size, focused }) => (
-            <FontAwesome5
-              name="clipboard-list" // Matches the icon for activity
-              color={color}
-              size={24}
-            />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="clipboard-list" color={color} size={24} />
           ),
         }}
       />
@@ -60,17 +48,34 @@ const DashboardLayout = () => {
         options={{
           title: 'Account',
           tabBarLabel: 'Account',
-          tabBarIcon: ({ color, size, focused }) => (
-            <MaterialIcons
-              name="account-circle" // Matches the icon for account
-              color={color}
-              size={24}
-            />
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="account-circle" color={color} size={24} />
           ),
         }}
       />
     </Tabs>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBarStyle: {
+    backgroundColor: '#EAF2F8',
+    borderTopWidth: 0,
+    paddingBottom: 5,
+  },
+  iosShadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  androidElevation: {
+    elevation: 5,
+  },
+  tabBarLabelStyle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+});
 
 export default DashboardLayout;

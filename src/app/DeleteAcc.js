@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, Animated, TouchableOpacity, TextInput } from 'react-native';
+import { View, StyleSheet, Alert, Animated, TouchableOpacity, TextInput, Dimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
+
+const { width, height } = Dimensions.get('window');
 
 const DeleteAcc = () => {
   const router = useRouter();
@@ -88,6 +90,8 @@ const DeleteAcc = () => {
           onPressIn={handlePressInDelete}
           onPressOut={handlePressOutDelete}
           style={styles.deleteButton}
+          accessibilityLabel="Confirm account deletion"
+          accessible
         >
           <Text style={styles.deleteButtonText}>Confirm Delete</Text>
         </TouchableOpacity>
@@ -98,6 +102,8 @@ const DeleteAcc = () => {
           onPressIn={handlePressInCancel}
           onPressOut={handlePressOutCancel}
           style={styles.cancelButton}
+          accessibilityLabel="Cancel account deletion"
+          accessible
         >
           <Text style={styles.cancelButtonText}>Cancel</Text>
         </TouchableOpacity>
@@ -110,28 +116,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EAF2F8',
-    paddingHorizontal: 20,
+    paddingHorizontal: width * 0.05, // Responsive padding
     justifyContent: 'center',
   },
   headerText: {
-    fontSize: 24,
+    fontSize: width * 0.06, // Responsive font size
     fontWeight: '700',
     color: '#4B79A1',
-    marginBottom: 20,
+    marginBottom: height * 0.02,
     textAlign: 'center',
   },
   messageText: {
-    fontSize: 16,
+    fontSize: width * 0.045, // Responsive font size
     color: '#4B79A1',
-    marginBottom: 30,
+    marginBottom: height * 0.04,
     textAlign: 'center',
   },
   input: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 15,
-    fontSize: 16,
-    marginBottom: 15,
+    borderRadius: width * 0.03, // Responsive border radius
+    padding: height * 0.02, // Responsive padding
+    fontSize: width * 0.045, // Responsive font size
+    marginBottom: height * 0.02,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -140,10 +146,10 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: '#4B79A1',
-    borderRadius: 25,
-    paddingVertical: 12,
+    borderRadius: width * 0.05,
+    paddingVertical: height * 0.015,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: height * 0.03,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -151,14 +157,14 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   deleteButtonText: {
-    fontSize: 16,
+    fontSize: width * 0.045, // Responsive font size
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   cancelButton: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 25,
-    paddingVertical: 12,
+    borderRadius: width * 0.05,
+    paddingVertical: height * 0.015,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#4B79A1',
@@ -169,7 +175,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cancelButtonText: {
-    fontSize: 16,
+    fontSize: width * 0.045, // Responsive font size
     fontWeight: 'bold',
     color: '#4B79A1',
   },

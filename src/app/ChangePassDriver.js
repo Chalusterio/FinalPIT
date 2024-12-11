@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
-const ChangePass = () => {
+const ChangePassDriver = () => {
   const router = useRouter();
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -172,4 +172,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangePass;
+export default ChangePassDriver;

@@ -7,7 +7,7 @@ import { Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
-const Account = () => {
+const AccountDriver = () => {
   const router = useRouter();
 
   const [scaleEdit] = React.useState(new Animated.Value(1));
@@ -32,19 +32,19 @@ const Account = () => {
   };
 
   const handleEditProfile = () => {
-    router.push('/edit-profile');
+    router.push('/edit-profileDriver');
   };
 
   const handleSettings = () => {
-    router.push('/Settings');
+    router.push('/SettingsDriver');
   };
 
-  const handlePaymentMethods = () => {
-    router.push('/PaymentMed');
+  const handleWalapa = () => {
+    router.push('/Walapa');
   };
 
-  const handleSavedPlaces = () => {
-    router.push('/EmergencyContacts');
+  const handleWalapa1 = () => {
+    router.push('/EmeConDriver');
   };
 
   return (
@@ -56,7 +56,7 @@ const Account = () => {
             style={styles.avatar}
           />
           <View style={styles.userDetails}>
-            <Text style={styles.userName}>Andre Jimm</Text>
+            <Text style={styles.userName}>Charlene Lusterio</Text>
             <Animated.View style={{ transform: [{ scale: scaleEdit }] }}>
               <TouchableOpacity
                 onPressIn={() => handlePressIn(scaleEdit)}
@@ -73,17 +73,17 @@ const Account = () => {
         <Animated.View style={{ transform: [{ scale: scalePayment }] }}>
           <TouchableOpacity
             onPressIn={() => handlePressIn(scalePayment)}
-            onPressOut={() => handlePressOut(scalePayment, handlePaymentMethods)}
+            onPressOut={() => handlePressOut(scalePayment, handleWalapa)}
             style={styles.option}
           >
-            <Text style={styles.optionText}>Payment Methods</Text>
+            <Text style={styles.optionText}>Wala pa</Text>
             <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
           </TouchableOpacity>
         </Animated.View>
         <Animated.View style={{ transform: [{ scale: scalePlaces }] }}>
           <TouchableOpacity
             onPressIn={() => handlePressIn(scalePlaces)}
-            onPressOut={() => handlePressOut(scalePlaces, handleSavedPlaces)}
+            onPressOut={() => handlePressOut(scalePlaces, handleWalapa1)}
             style={styles.option}
           >
             <Text style={styles.optionText}>Emergency Contacts</Text>
@@ -185,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Account;
+export default AccountDriver;

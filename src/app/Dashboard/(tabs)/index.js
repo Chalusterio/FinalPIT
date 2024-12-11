@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
+const { width, height } = Dimensions.get('window');
 
 const Home = () => {
   const navigation = useNavigation();
@@ -26,14 +28,18 @@ const Home = () => {
 
       {/* Bus Circle and "Book Now!" Button */}
       <View style={styles.bookNowContainer}>
-        <Image
-          source={require('../../../../assets/bus-circle.png')} // Path for the bus circle icon
-          style={styles.busCircleIcon}
-        />
+        <View style={styles.busCircleContainer}>
+          <Image
+            source={require('../../../../assets/bus-circle.png')} // Path for the bus circle icon
+            style={styles.busCircleIcon}
+          />
+        </View>
         <TouchableOpacity
           style={styles.bookNowButton}
           onPress={handleBookNowClick}
           activeOpacity={0.8}
+          accessibilityLabel="Book a ride now"
+          accessible
         >
           <Text style={styles.bookNowText}>Book Now!</Text>
         </TouchableOpacity>
@@ -49,55 +55,62 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#4B79A1',
-    paddingVertical: 30,
-    paddingHorizontal: 20,
+    paddingVertical: height * 0.03, // Dynamic padding based on screen height
+    paddingHorizontal: width * 0.05, // Dynamic horizontal padding
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   textContainer: {
     flex: 1,
-    paddingRight: 20, // Add spacing between the text and the bus image
+    paddingRight: width * 0.05, // Spacing between text and image
   },
   title: {
-    fontSize: 28,
+    fontSize: width * 0.07, // Dynamic font size
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'left',
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: width * 0.04, // Dynamic font size
     color: '#FFFFFF',
     textAlign: 'left',
   },
   busIcon: {
-    width: 150,
-    height: 150,
+    width: width * 0.35,
+    height: width * 0.35,
     resizeMode: 'contain',
   },
   bookNowContainer: {
-    position: 'absolute',
-    top: 250, // Positioned just below the header
-    right: 150, // Adjust for desired horizontal position
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: height * -0.05, // Move container slightly upward
+  },
+  busCircleContainer: {
+    width: width * 0.4,
+    height: width * 0.4,
+    borderRadius: width * 0.2,
+    backgroundColor: '#D9EAFD',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: height * 0.02, // Space between circle and button
   },
   busCircleIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10, // Space between the circle and the button
+    width: width * 0.3,
+    height: width * 0.2,
     resizeMode: 'contain',
   },
   bookNowButton: {
     backgroundColor: '#4B79A1',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.2,
+    borderRadius: width * 0.1,
     elevation: 10, // Add shadow effect
   },
   bookNowText: {
-    fontSize: 16,
+    fontSize: width * 0.045,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
