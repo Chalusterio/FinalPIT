@@ -10,15 +10,14 @@ import {
 import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { signInWithEmailAndPassword } from 'firebase/auth';  // Importing Firebase Auth method
-import { auth } from '../config/firebaseConfig';  // Importing Firebase config
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Auth
+import { auth } from '../config/firebaseConfig'; // Firebase Config
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // State to manage password visibility
   const [scale] = useState(new Animated.Value(1)); // Initial scale value
-  const [error, setError] = useState('');  // State to handle error messages
   const router = useRouter();
 
   const handleLoginPressIn = () => {
@@ -37,57 +36,46 @@ const LogIn = () => {
     });
   };
 
-judi
   const handleLogin = async () => {
-    // Regex for email and mobile number validation
-
-  const handleLogin = () => {
     // Navigate to DashboardDriver folder if credentials match
     if (email === 'charlene@gmail.com' && password === '123') {
       router.replace('/DashboardDriver'); // Ensure the path matches your folder structure
       return;
     }
-  
+
     // Regex for email and numeric-only input (mobile number)
-juditest
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const mobilePattern = /^[0-9]+$/;
-  
+
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter your mobile number or email.');
       return;
     }
-  
+
     if (!emailPattern.test(email) && !mobilePattern.test(email)) {
       Alert.alert('Error', 'Please enter a valid email address or mobile number.');
       return;
     }
-  
+
     if (!password.trim()) {
       Alert.alert('Error', 'Please enter your password.');
       return;
     }
-judi
 
     try {
       // Firebase Authentication logic
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in:', userCredential.user);
       Alert.alert('Login Successful', `Welcome back, ${userCredential.user.email}`);
-      router.replace('Dashboard');  // Redirect to Dashboard after successful login
+      router.replace('/Dashboard'); // Redirect to Dashboard after successful login
     } catch (err) {
       console.error('Login error:', err.message);
-      setError(err.message);  // Set the error message if login fails
       Alert.alert('Login Failed', 'Please check your credentials and try again.');
     }
-
-  
-    router.replace('/Dashboard'); // Default dashboard for other users
-juditest
   };
 
   const handleRegister = () => {
-    router.push('Register');  // Navigate to the Register screen if the user doesn't have an account
+    router.push('Register'); // Navigate to the Register screen
   };
 
   return (
