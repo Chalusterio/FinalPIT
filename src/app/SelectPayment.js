@@ -15,16 +15,17 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const SelectPayment = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
-  const [isConfirmed, setIsConfirmed] = useState(false); // Modal visibility state
-  const [route, setRoute] = useState('SM Downtown Premiere - Dunkin Gusa'); // Example route
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [route, setRoute] = useState('');
   const navigation = useNavigation();
 
-  // Example for backend fetch
   useEffect(() => {
-    // Simulated backend fetch - replace with actual API call when needed
     setTimeout(() => {
-      setRoute('SM Downtown Premiere - Dunkin Gusa'); // Set example route
+      setRoute('SM Downtown Premiere - Dunkin Gusa');
     }, 1000);
+    return () => {
+      setSelectedPayment(null); // Clean up on unmount
+    };
   }, []);
 
   const handlePaymentSelect = (method) => {
@@ -33,20 +34,22 @@ const SelectPayment = () => {
 
   const handleBook = () => {
     if (selectedPayment) {
-      setIsConfirmed(true); // Show the confirmation modal
+      setIsConfirmed(true);
     } else {
       Alert.alert('Error', 'Please select a payment method.');
     }
   };
 
   const closeModal = () => {
-    setIsConfirmed(false); // Close modal
-    navigation.navigate('Dashboard/(tabs)', { screen: 'index' }); // Navigate to index.js in Dashboard (tabs)
+    setIsConfirmed(false);
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Dashboard/(tabs)' }],
+    });
   };
 
   return (
     <View style={styles.background}>
-      {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -76,7 +79,7 @@ const SelectPayment = () => {
         {/* Bus & Fare Details */}
         <View style={[styles.card, styles.shadow]}>
           <View style={styles.busInfo}>
-            <Text style={styles.text}>Bus</Text>
+          <Text style={[styles.text, { fontWeight: 'bold' }]}>Bus</Text>
             <Text style={styles.price}>₱12.00</Text>
           </View>
         </View>

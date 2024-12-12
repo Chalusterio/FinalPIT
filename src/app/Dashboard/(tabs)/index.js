@@ -8,12 +8,13 @@ const Home = () => {
   const navigation = useNavigation();
 
   const handleBookNowClick = () => {
-    navigation.navigate('Transport'); // Navigates to the Transport.js screen
+    if (navigation.isFocused()) {
+      navigation.navigate('Transport'); // Avoid double navigation
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.textContainer}>
           <Text style={styles.title}>Welcome to PasaHEREro</Text>
@@ -21,16 +22,14 @@ const Home = () => {
           <Text style={styles.subtitle}>Enjoy seamless bookings and real-time updates!</Text>
         </View>
         <Image
-          source={require('../../../../assets/bus.png')} // Corrected path for the bus icon
+          source={require('../../../../assets/bus.png')}
           style={styles.busIcon}
         />
       </View>
-
-      {/* Bus Circle and "Book Now!" Button */}
       <View style={styles.bookNowContainer}>
         <View style={styles.busCircleContainer}>
           <Image
-            source={require('../../../../assets/bus-circle.png')} // Path for the bus circle icon
+            source={require('../../../../assets/bus-circle.png')}
             style={styles.busCircleIcon}
           />
         </View>

@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
-import { useNavigation } from '@react-navigation/native'; // Import navigation
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import debounce from 'lodash.debounce'; // Import debounce
 
 const Transport = () => {
   const [selectedLoading, setSelectedLoading] = useState(null);
   const [selectedUnloading, setSelectedUnloading] = useState(null);
-  const navigation = useNavigation(); // Hook for navigation
+  const navigation = useNavigation();
 
   const handleBackPress = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   const handleLoadingPress = (spotNumber) => {
@@ -20,34 +21,29 @@ const Transport = () => {
     setSelectedUnloading((prev) => (prev === spotNumber ? null : spotNumber));
   };
 
-  const handleBookPress = () => {
-    navigation.navigate('SelectPayment'); // Navigate to SelectPayment.js
-  };
-
+  // Define these functions to check selection status
   const isSelectedLoading = (spotNumber) => selectedLoading === spotNumber;
   const isSelectedUnloading = (spotNumber) => selectedUnloading === spotNumber;
 
+  const handleBookPress = debounce(() => {
+    navigation.navigate('SelectPayment');
+  }, 500); // Debounce to avoid multiple triggers
+
   return (
     <View style={styles.container}>
-      {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.headerContainer}>
           <View style={styles.titleContainer}>
-            {/* Back Button */}
             <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
               <Ionicons name="arrow-back" size={24} color="white" />
             </TouchableOpacity>
-            {/* Title */}
             <Text style={styles.title}>Transport</Text>
           </View>
-          <View>
-            {/* Subtitle */}
-            <Text style={styles.subtitle}>Book Your Destination:{'\n'}Journey Made Simple!</Text>
-          </View>
+          <Text style={styles.subtitle}>Book Your Destination:{'\n'}Journey Made Simple!</Text>
         </View>
         <View style={styles.imageContainer}>
           <Image
-            source={require('../../assets/bus.png')} // Correct path for the bus image
+            source={require('../../assets/bus.png')}
             style={styles.busIcon}
           />
         </View>
