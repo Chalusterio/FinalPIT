@@ -11,7 +11,8 @@ import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Auth
-import { auth } from '../config/firebaseConfig'; // Firebase Config
+import { doc, getDoc } from 'firebase/firestore'; // Firestore
+import { auth, db } from '../config/firebaseConfig'; // Firebase Config
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
@@ -37,23 +38,16 @@ const LogIn = () => {
   };
 
   const handleLogin = async () => {
-    // Navigate to DashboardDriver folder if credentials match
-    if (email === 'charlene@gmail.com' && password === '123') {
-      router.replace('/DashboardDriver'); // Ensure the path matches your folder structure
-      return;
-    }
-
     // Regex for email and numeric-only input (mobile number)
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const mobilePattern = /^[0-9]+$/;
 
     if (!email.trim()) {
-      Alert.alert('Error', 'Please enter your mobile number or email.');
+      Alert.alert('Error', 'Please enter your email.');
       return;
     }
 
-    if (!emailPattern.test(email) && !mobilePattern.test(email)) {
-      Alert.alert('Error', 'Please enter a valid email address or mobile number.');
+    if (!emailPattern.test(email)) {
+      Alert.alert('Error', 'Please enter a valid email address.');
       return;
     }
 
@@ -65,9 +59,19 @@ const LogIn = () => {
     try {
       // Firebase Authentication logic
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('User logged in:', userCredential.user);
-      Alert.alert('Login Successful', `Welcome back, ${userCredential.user.email}`);
-      router.replace('/Dashboard'); // Redirect to Dashboard after successful login
+      const user = userCredential.user;
+
+      // Fetch user's first and last name from Firestore
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const { firstName, lastName } = userDoc.data();
+        Alert.alert('Login Successful', `Welcome back, ${firstName} ${lastName}!`);
+        router.replace('/Dashboard'); // Redirect to Dashboard after successful login
+      } else {
+        Alert.alert('Login Failed', 'User data not found in the database.');
+      }
     } catch (err) {
       console.error('Login error:', err.message);
       Alert.alert('Login Failed', 'Please check your credentials and try again.');
@@ -89,7 +93,7 @@ const LogIn = () => {
         Welcome Back!
       </Text>
       <TextInput
-        label="Email or Mobile Number"
+        label="Email"
         mode="outlined"
         value={email}
         onChangeText={setEmail}

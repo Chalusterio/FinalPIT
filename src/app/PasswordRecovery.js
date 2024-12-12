@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert, Animated, TouchableOpacity } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
+import { sendPasswordResetEmail } from 'firebase/auth'; // Import Firebase auth method
+import { auth } from '../config/firebaseConfig'; // Import Firebase configuration
 
 const PasswordRecovery = () => {
   const [email, setEmail] = useState('');
@@ -24,30 +26,30 @@ const PasswordRecovery = () => {
     });
   };
 
-  const handlePasswordRecovery = () => {
-    // Regex for valid email and pure numeric mobile number
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const mobilePattern = /^[0-9]+$/;
-
+  const handlePasswordRecovery = async () => {
     if (!email.trim()) {
-      Alert.alert('Error', 'Please enter your email address or mobile number.');
+      Alert.alert('Error', 'Please enter your email address.');
       return;
     }
 
-    if (!emailPattern.test(email) && !mobilePattern.test(email)) {
-      Alert.alert(
-        'Error',
-        'Please enter a valid email address format or a registered mobile number.'
-      );
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex for valid email
+    if (!emailPattern.test(email)) {
+      Alert.alert('Error', 'Please enter a valid email address.');
       return;
     }
 
-    Alert.alert('Success', 'Password recovery link sent!', [
-      {
-        text: 'OK',
-        onPress: () => router.push('/'),
-      },
-    ]);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert('Success', 'Password recovery link sent!', [
+        {
+          text: 'OK',
+          onPress: () => router.push('/'), // Redirect to home or login screen
+        },
+      ]);
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      Alert.alert('Error', 'Failed to send password recovery link. Please try again.');
+    }
   };
 
   return (
@@ -56,10 +58,10 @@ const PasswordRecovery = () => {
         Password Recovery
       </Text>
       <Text style={styles.instructions}>
-        Enter your email or mobile number to receive a password recovery link.
+        Enter your email address to receive a password recovery link.
       </Text>
       <TextInput
-        label="Email or Mobile Number"
+        label="Email"
         mode="outlined"
         value={email}
         onChangeText={setEmail}

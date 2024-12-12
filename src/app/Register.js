@@ -3,13 +3,15 @@ import { View, StyleSheet, Alert, Animated, TouchableOpacity } from 'react-nativ
 import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebaseConfig'; // Import Firebase authentication
+import { auth, db } from '../config/firebaseConfig'; // Import Firebase config
+import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
 
 const Register = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState(''); // State for phone number
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [scaleRegister] = useState(new Animated.Value(1)); // Scaling for the Register button
@@ -18,14 +20,14 @@ const Register = () => {
 
   const handlePressInRegister = () => {
     Animated.spring(scaleRegister, {
-      toValue: 0.95, // Shrinks the button slightly
+      toValue: 0.95,
       useNativeDriver: true,
     }).start();
   };
 
   const handlePressOutRegister = () => {
     Animated.spring(scaleRegister, {
-      toValue: 1, // Returns button to original size
+      toValue: 1,
       useNativeDriver: true,
     }).start(() => {
       handleRegister(); // Triggers the registration logic after animation
@@ -34,14 +36,14 @@ const Register = () => {
 
   const handlePressInLogin = () => {
     Animated.spring(scaleLogin, {
-      toValue: 0.95, // Shrinks the link slightly
+      toValue: 0.95,
       useNativeDriver: true,
     }).start();
   };
 
   const handlePressOutLogin = () => {
     Animated.spring(scaleLogin, {
-      toValue: 1, // Returns link to original size
+      toValue: 1,
       useNativeDriver: true,
     }).start(() => {
       router.push('/'); // Navigate to the login screen after animation
@@ -49,23 +51,15 @@ const Register = () => {
   };
 
   const handleRegister = async () => {
-    // Regex to validate email with @ and .com
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (
-      !firstName.trim() ||
-      !lastName.trim() ||
-      !username.trim() ||
-      !email.trim() ||
-      !password.trim() ||
-      !confirmPassword.trim()
-    ) {
+    if (!firstName.trim() || !lastName.trim() || !username.trim() || !email.trim() || !phone.trim() || !password.trim() || !confirmPassword.trim()) {
       Alert.alert('Error', 'Please fill out all fields.');
       return;
     }
 
     if (!emailPattern.test(email)) {
-      Alert.alert('Error', 'Please enter a valid email address format');
+      Alert.alert('Error', 'Please enter a valid email address.');
       return;
     }
 
@@ -74,15 +68,32 @@ const Register = () => {
       return;
     }
 
-    // Firebase registration logic
     try {
+      // Create user with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User registered:", userCredential.user);
-      Alert.alert('Registration Successful', 'You can now log in.');
+      const user = userCredential.user;
+
+      // Fetch all user documents to determine the next userID
+      const usersCollection = collection(db, 'users');
+      const snapshot = await getDocs(usersCollection);
+      const userCount = snapshot.size + 1; // Increment user count to generate new userID
+
+      // Save user data to Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        userID: userCount,
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+        email: email,
+        phone: phone, // Save phone number
+        createdAt: new Date(),
+      });
+
+      Alert.alert('Success', 'Account created successfully!');
       router.replace('/'); // Redirect to login screen
     } catch (err) {
-      console.error("Registration error:", err.message);
-      Alert.alert('Error', err.message); // Show error if registration fails
+      console.error('Registration error:', err.message);
+      Alert.alert('Error', err.message);
     }
   };
 
@@ -127,6 +138,17 @@ const Register = () => {
         mode="outlined"
         value={email}
         onChangeText={setEmail}
+        style={styles.input}
+        outlineColor="#4B79A1"
+        activeOutlineColor="#4B79A1"
+      />
+
+      <TextInput
+        label="Phone Number"
+        mode="outlined"
+        value={phone}
+        onChangeText={setPhone}
+        keyboardType="phone-pad"
         style={styles.input}
         outlineColor="#4B79A1"
         activeOutlineColor="#4B79A1"
