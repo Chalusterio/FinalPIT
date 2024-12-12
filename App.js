@@ -7,6 +7,8 @@ import Register from './src/Register';
 import PasswordRecovery from './src/PasswordRecovery';
 import Transport from './src/Transport';
 import SelectPayment from './src/SelectPayment';
+import HomeDriver from './HomeDriver'; // Adjust the path accordingly
+import AvailableCommuters from './AvailableCommuters';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +22,8 @@ const App = () => {
         <Stack.Screen name="PasswordRecovery" component={PasswordRecovery} options={{ title: 'Password Recovery' }} />
         <Stack.Screen name="Transport" component={Transport} options={{ title: 'Transport' }} />
         <Stack.Screen name="SelectPayment" component={SelectPayment} options={{ title: 'Select Payment' }} />
+        <Stack.Screen name="HomeDriver" component={HomeDriver} options={{ title: 'Home Driver' }} />
+        <Stack.Screen name="AvailableCommuters" component={AvailableCommuters} options={{ title: 'Available Commuters' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -7,13 +7,13 @@ import * as ImagePicker from 'expo-image-picker';
 
 const { width, height } = Dimensions.get('window');
 
-const EditProfile = () => {
+const EditProfileAccount = () => {
   const router = useRouter();
 
   const [userData, setUserData] = useState({
-    name: 'Andre Jimm',
-    phone: '09972503678',
-    email: 'andre@gmail.com',
+    name: 'Charlene',
+    phone: '09970683029',
+    email: 'charlene@gmail.com',
   });
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -220,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditProfile;
+export default EditProfileAccount;

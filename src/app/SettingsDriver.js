@@ -6,7 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
-const Settings = () => {
+const SettingsDriver = () => {
   const router = useRouter();
 
   // Animation states for buttons
@@ -25,7 +25,7 @@ const Settings = () => {
       toValue: 1,
       useNativeDriver: true,
     }).start(() => {
-      router.push('/Dashboard/(tabs)/Account');
+      router.push('/DashboardDriver/(tabs)/AccountDriver');
     });
   };
 
@@ -48,8 +48,8 @@ const Settings = () => {
     });
   };
 
-  const handleChangePassword = () => router.push('/ChangePass');
-  const handleDeleteAccount = () => router.push('/DeleteAcc');
+  const handleChangePassword = () => router.push('/ChangePassDriver');
+  const handleDeleteAccount = () => router.push('/DeleteAccDriver');
 
   return (
     <View style={styles.background}>
@@ -184,4 +184,4 @@ const styles = StyleSheet.create({
 
 
 
-export default Settings;
+export default SettingsDriver;
