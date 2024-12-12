@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert, Animated, TouchableOpacity } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebaseConfig'; // Import Firebase authentication
 
 const Register = () => {
   const [firstName, setFirstName] = useState('');
@@ -48,7 +46,7 @@ const Register = () => {
     });
   };
 
-  const handleRegister = async () => {
+  const handleRegister = () => {
     // Regex to validate email with @ and .com
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -74,16 +72,8 @@ const Register = () => {
       return;
     }
 
-    // Firebase registration logic
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User registered:", userCredential.user);
-      Alert.alert('Registration Successful', 'You can now log in.');
-      router.replace('/'); // Redirect to login screen
-    } catch (err) {
-      console.error("Registration error:", err.message);
-      Alert.alert('Error', err.message); // Show error if registration fails
-    }
+    Alert.alert('User Registration Successful', 'Please login');
+    router.replace('/');
   };
 
   return (

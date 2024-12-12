@@ -10,8 +10,6 @@ import {
 import { Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Auth
-import { auth } from '../config/firebaseConfig'; // Firebase Config
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
@@ -36,46 +34,37 @@ const LogIn = () => {
     });
   };
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     // Navigate to DashboardDriver folder if credentials match
     if (email === 'charlene@gmail.com' && password === '123') {
       router.replace('/DashboardDriver'); // Ensure the path matches your folder structure
       return;
     }
-
+  
     // Regex for email and numeric-only input (mobile number)
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const mobilePattern = /^[0-9]+$/;
-
+  
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter your mobile number or email.');
       return;
     }
-
+  
     if (!emailPattern.test(email) && !mobilePattern.test(email)) {
       Alert.alert('Error', 'Please enter a valid email address or mobile number.');
       return;
     }
-
+  
     if (!password.trim()) {
       Alert.alert('Error', 'Please enter your password.');
       return;
     }
-
-    try {
-      // Firebase Authentication logic
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('User logged in:', userCredential.user);
-      Alert.alert('Login Successful', `Welcome back, ${userCredential.user.email}`);
-      router.replace('/Dashboard'); // Redirect to Dashboard after successful login
-    } catch (err) {
-      console.error('Login error:', err.message);
-      Alert.alert('Login Failed', 'Please check your credentials and try again.');
-    }
+  
+    router.replace('/Dashboard'); // Default dashboard for other users
   };
 
   const handleRegister = () => {
-    router.push('Register'); // Navigate to the Register screen
+    router.push('Register');
   };
 
   return (
