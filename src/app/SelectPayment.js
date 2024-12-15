@@ -1,54 +1,89 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
-import { db } from '../config/firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../config/firebaseConfig'; // Ensure auth is imported
+import { useRouter } from 'expo-router'; // Import useRouter from expo-router
 
 const SelectPayment = () => {
-  const navigation = useNavigation();
+  const router = useRouter(); // Initialize router
   const route = useRoute();
 
   const { loadingSpot, unloadingSpot } = route.params;
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const handleBackPress = () => {
-    navigation.goBack();
-  };
+  // Fetch the current logged-in user
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    return unsubscribe;
+  }, []);
 
-  const handlePaymentSelect = async (paymentMethod) => {
-    try {
-      // Fetch all bookings to determine the next booking ID
-      const bookingsCollection = collection(db, 'bookings');
-      const querySnapshot = await getDocs(bookingsCollection);
-
-      const bookingID = querySnapshot.size + 1; // Increment the last ID
-
-      const newBooking = {
-        bookingID,
-        l_spot: loadingSpot.name,
-        ul_spot: unloadingSpot.name,
-        payment_method: paymentMethod,
-        price: 12, // Static value
-        status: 'Ongoing', // Static value
-      };
-
-      // Add the booking to Firestore
-      await addDoc(bookingsCollection, newBooking);
-
-      // Show success pop-up
-      Alert.alert('Success', 'Your ticket has been successfully booked!', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
-    } catch (error) {
-      console.error('Error saving booking: ', error);
-      Alert.alert('Error', 'Failed to book your ticket. Please try again.');
+  const handlePaymentSelect = (paymentMethod) => {
+    if (!currentUser) {
+      Alert.alert('Error', 'You must be logged in to book a ticket.');
+      return;
     }
+
+    Alert.alert(
+      'Confirm Payment',
+      `You have selected ${paymentMethod} as your payment method. Do you want to confirm?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: async () => {
+            try {
+              // Fetch all bookings to determine the next booking ID
+              const bookingsCollection = collection(db, 'bookings');
+              const querySnapshot = await getDocs(bookingsCollection);
+
+              const bookingID = querySnapshot.size + 1; // Increment the last ID
+
+              const newBooking = {
+                bookingID,
+                l_spot: loadingSpot.name,
+                ul_spot: unloadingSpot.name,
+                payment_method: paymentMethod,
+                price: 12, // Static value
+                status: 'Ongoing', // Static value
+                userID: currentUser.uid, // Add the logged-in user's ID
+              };
+
+              // Add the booking to Firestore
+              await addDoc(bookingsCollection, newBooking);
+
+              // Show success pop-up
+              Alert.alert('Success', 'Your ticket has been successfully booked!', [
+                {
+                  text: 'OK',
+                  onPress: () => router.push('/Dashboard/(tabs)'), // Correct route for the "Home" tab
+                },
+              ]);              
+            } catch (error) {
+              console.error('Error saving booking: ', error);
+              Alert.alert('Error', 'Failed to book your ticket. Please try again.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <Text style={styles.title}>Select Payment</Text>
