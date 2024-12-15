@@ -1,19 +1,58 @@
-import React from 'react';
-import { View, StyleSheet, Animated, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+} from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
+import { auth } from '../../../../src/config/firebaseConfig'; // Firebase Auth
+import { getDoc, doc } from 'firebase/firestore'; // Firestore
+import { db } from '../../../../src/config/firebaseConfig'; // Firestore Config
 
 const { width } = Dimensions.get('window');
 
 const Account = () => {
   const router = useRouter();
+  const [scaleEdit] = useState(new Animated.Value(1));
+  const [scaleSettings] = useState(new Animated.Value(1));
+  const [scalePayment] = useState(new Animated.Value(1));
+  const [scalePlaces] = useState(new Animated.Value(1));
 
-  const [scaleEdit] = React.useState(new Animated.Value(1));
-  const [scaleSettings] = React.useState(new Animated.Value(1));
-  const [scalePayment] = React.useState(new Animated.Value(1));
-  const [scalePlaces] = React.useState(new Animated.Value(1));
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null); // State for profile picture
+
+  // Fetch user details from Firestore
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser; // Get currently authenticated user
+        if (user) {
+          const userDocRef = doc(db, 'users', user.uid); // Reference to the user's document
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setFirstName(userData.firstName || '');
+            setLastName(userData.lastName || '');
+            setProfilePicture(userData.profilePicture || null); // Set profile picture
+          } else {
+            console.error('User document does not exist.');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handlePressIn = (scale) => {
     Animated.spring(scale, {
@@ -51,12 +90,20 @@ const Account = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.userInfoContainer}>
+          {/* Display profile picture dynamically */}
           <Image
-            source={require('../../../../assets/avatar.png')}
+            source={
+              profilePicture
+                ? { uri: profilePicture } // Use the profile picture URL
+                : require('../../../../assets/avatar.png') // Default avatar
+            }
             style={styles.avatar}
           />
           <View style={styles.userDetails}>
-            <Text style={styles.userName}>Andre Jimm</Text>
+            {/* Display first and last name dynamically */}
+            <Text style={styles.userName}>
+              {firstName} {lastName}
+            </Text>
             <Animated.View style={{ transform: [{ scale: scaleEdit }] }}>
               <TouchableOpacity
                 onPressIn={() => handlePressIn(scaleEdit)}

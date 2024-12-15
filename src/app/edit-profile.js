@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Animated, TouchableOpacity, Image, Alert, TextInput, Dimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { auth, db } from '../config/firebaseConfig'; // Ensure proper Firebase config
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -11,15 +14,43 @@ const EditProfile = () => {
   const router = useRouter();
 
   const [userData, setUserData] = useState({
-    name: 'Andre Jimm',
-    phone: '09972503678',
-    email: 'andre@gmail.com',
+    fullName: '',
+    phone: '',
+    email: '',
   });
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
-
   const [scaleClose] = useState(new Animated.Value(1));
   const [scaleSave] = useState(new Animated.Value(1));
+
+  const userId = auth.currentUser?.uid; // Get current user ID
+  const storage = getStorage();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!userId) return;
+      try {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setUserData({
+            fullName: `${data.firstName} ${data.lastName}`,
+            phone: data.phone,
+            email: data.email,
+          });
+          if (data.profilePicture) {
+            setProfilePicture(data.profilePicture);
+          }
+        } else {
+          console.warn('No such user document!');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
 
   const handlePressIn = (scale) => {
     Animated.spring(scale, {
@@ -37,10 +68,34 @@ const EditProfile = () => {
     });
   };
 
-  const handleSave = () => {
-    Alert.alert('Profile Saved', 'Your changes have been saved successfully.');
-    setIsEditing(false);
-    router.back();
+  const handleSave = async () => {
+    if (!userId) return;
+
+    try {
+      const userRef = doc(db, 'users', userId);
+      const updates = {
+        phone: userData.phone,
+        email: userData.email,
+      };
+
+      // If profile picture was changed, upload it
+      if (profilePicture && !profilePicture.startsWith('https://')) {
+        const storageRef = ref(storage, `profilePictures/${userId}`);
+        const response = await fetch(profilePicture);
+        const blob = await response.blob();
+
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+        updates.profilePicture = downloadURL;
+      }
+
+      await updateDoc(userRef, updates);
+      Alert.alert('Success', 'Profile updated successfully.');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      Alert.alert('Error', 'Failed to save changes. Please try again.');
+    }
   };
 
   const handleEditToggle = () => {
@@ -60,7 +115,7 @@ const EditProfile = () => {
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // Ensure this line is updated
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
@@ -74,6 +129,7 @@ const EditProfile = () => {
         Alert.alert('Cancelled', 'No image was selected.');
       }
     } catch (error) {
+      console.error('Image Selection Error:', error); // Log the error
       Alert.alert('Error', 'An error occurred while selecting the image.');
     }
   };
@@ -119,9 +175,9 @@ const EditProfile = () => {
         <Text style={styles.label}>Full Name</Text>
         <TextInput
           style={styles.input}
-          value={userData.name}
-          onChangeText={(text) => handleInputChange('name', text)}
-          editable={isEditing}
+          value={userData.fullName}
+          onChangeText={(text) => handleInputChange('fullName', text)}
+          editable={false}
         />
 
         <Text style={styles.label}>Phone Number</Text>
