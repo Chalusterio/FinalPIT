@@ -1,44 +1,76 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { db, auth } from '../../../config/firebaseConfig';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const { width } = Dimensions.get('window');
 
 const Activity = () => {
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [bookings, setBookings] = useState([]); // State for user bookings
+  const [loading, setLoading] = useState(true); // Loading indicator
+  const [currentUser, setCurrentUser] = useState(null); // Current user state
 
+  // Fetch the current logged-in user
   useEffect(() => {
-    // Mock data to simulate backend response
-    const mockData = [
-      { id: 1, title: "Ride to USTP", date: "04 Dec 2024, 15:00", price: 69.0 },
-      { id: 2, title: "Ride to Snooks", date: "04 Dec 2024, 15:00", price: 100.0 },
-      { id: 3, title: "Ride to DTL", date: "04 Dec 2024, 15:00", price: 69.0 },
-      { id: 4, title: "Ride to SM Uptown", date: "04 Dec 2024, 15:00", price: 110.0 },
-    ];
-
-    // Simulate a delay for loading
-    setTimeout(() => {
-      setBookings(mockData);
-      setLoading(false);
-    }, 1000);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    return unsubscribe;
   }, []);
 
+  // Fetch user's bookings from Firestore
+  useEffect(() => {
+    const fetchUserBookings = async () => {
+      if (!currentUser) return;
+
+      try {
+        const bookingsRef = collection(db, 'bookings');
+        const q = query(bookingsRef, where('userID', '==', currentUser.uid)); // Query only for current user
+        const querySnapshot = await getDocs(q);
+
+        const userBookings = [];
+        querySnapshot.forEach((doc) => {
+          userBookings.push({ id: doc.id, ...doc.data() });
+        });
+
+        setBookings(userBookings);
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (currentUser) {
+      fetchUserBookings();
+    }
+  }, [currentUser]); // Re-run when currentUser changes
+
+  // Render each booking item
   const renderBookingItem = ({ item }) => (
     <TouchableOpacity style={styles.bookingItem} accessibilityLabel={`Booking item: ${item.title}`}>
       <View style={styles.bookingInfo}>
         <FontAwesome name="bus" size={24} color="black" style={styles.busIcon} />
         <View>
-          <Text style={styles.bookingTitle}>{item.title}</Text>
-          <Text style={styles.bookingDate}>{item.date}</Text>
+          <Text style={styles.bookingTitle}>
+            Ride from {item.l_spot} to {item.ul_spot}
+          </Text>
+          <Text style={styles.bookingDate}>{item.date || 'No Date Provided'}</Text>
         </View>
       </View>
       <View style={styles.priceContainer}>
-        <Text style={styles.bookingPrice}>₱{item.price.toFixed(2)}</Text>
+        <Text style={styles.bookingPrice}>₱{item.price ? item.price.toFixed(2) : '0.00'}</Text>
       </View>
     </TouchableOpacity>
   );
 
+  // Loading indicator while fetching data
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -48,6 +80,7 @@ const Activity = () => {
     );
   }
 
+  // Render main content
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -57,7 +90,7 @@ const Activity = () => {
       {bookings.length > 0 ? (
         <FlatList
           data={bookings}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id}
           renderItem={renderBookingItem}
           contentContainerStyle={styles.listContainer}
         />
