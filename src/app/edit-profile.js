@@ -115,12 +115,11 @@ const EditProfile = () => {
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaType.Images,  // Updated to MediaType
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // Ensure this line is updated
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
       });
-      
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const selectedImageUri = result.assets[0].uri;
@@ -130,6 +129,7 @@ const EditProfile = () => {
         Alert.alert('Cancelled', 'No image was selected.');
       }
     } catch (error) {
+      console.error('Image Selection Error:', error); // Log the error
       Alert.alert('Error', 'An error occurred while selecting the image.');
     }
   };

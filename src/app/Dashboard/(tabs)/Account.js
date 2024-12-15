@@ -26,6 +26,7 @@ const Account = () => {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null); // State for profile picture
 
   // Fetch user details from Firestore
   useEffect(() => {
@@ -40,6 +41,7 @@ const Account = () => {
             const userData = userDoc.data();
             setFirstName(userData.firstName || '');
             setLastName(userData.lastName || '');
+            setProfilePicture(userData.profilePicture || null); // Set profile picture
           } else {
             console.error('User document does not exist.');
           }
@@ -88,8 +90,13 @@ const Account = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.userInfoContainer}>
+          {/* Display profile picture dynamically */}
           <Image
-            source={require('../../../../assets/avatar.png')}
+            source={
+              profilePicture
+                ? { uri: profilePicture } // Use the profile picture URL
+                : require('../../../../assets/avatar.png') // Default avatar
+            }
             style={styles.avatar}
           />
           <View style={styles.userDetails}>
