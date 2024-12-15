@@ -1,134 +1,114 @@
+// Transport.js
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
-import { useNavigation } from '@react-navigation/native'; // Import navigation
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const Transport = () => {
   const [selectedLoading, setSelectedLoading] = useState(null);
   const [selectedUnloading, setSelectedUnloading] = useState(null);
-  const navigation = useNavigation(); // Hook for navigation
+  const navigation = useNavigation();
+
+  const loadingSpots = [
+    { id: 1, name: 'USTP CDO', image: require('../../assets/loading1.png') },
+    { id: 2, name: 'SM Downtown', image: require('../../assets/loading2.png') },
+    { id: 3, name: 'Limketkai Mall', image: require('../../assets/loading3.png') },
+  ];
+
+  const unloadingSpots = [
+    { id: 1, name: 'Cogon', image: require('../../assets/unloading1.png') },
+    { id: 2, name: 'Ayala', image: require('../../assets/unloading2.png') },
+    { id: 3, name: 'Gusa', image: require('../../assets/unloading3.png') },
+  ];
 
   const handleBackPress = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
-  const handleLoadingPress = (spotNumber) => {
-    setSelectedLoading((prev) => (prev === spotNumber ? null : spotNumber));
-  };
-
-  const handleUnloadingPress = (spotNumber) => {
-    setSelectedUnloading((prev) => (prev === spotNumber ? null : spotNumber));
+  const handleSpotPress = (spotType, spotId) => {
+    if (spotType === 'loading') {
+      setSelectedLoading((prev) => (prev === spotId ? null : spotId));
+    } else {
+      setSelectedUnloading((prev) => (prev === spotId ? null : spotId));
+    }
   };
 
   const handleBookPress = () => {
-    navigation.navigate('SelectPayment'); // Navigate to SelectPayment.js
+    const loadingSpot = loadingSpots.find((spot) => spot.id === selectedLoading);
+    const unloadingSpot = unloadingSpots.find((spot) => spot.id === selectedUnloading);
+
+    if (loadingSpot && unloadingSpot) {
+      navigation.navigate('SelectPayment', {
+        loadingSpot,
+        unloadingSpot,
+      });
+    }
   };
 
-  const isSelectedLoading = (spotNumber) => selectedLoading === spotNumber;
-  const isSelectedUnloading = (spotNumber) => selectedUnloading === spotNumber;
+  const isSelected = (spotType, spotId) => {
+    return spotType === 'loading'
+      ? selectedLoading === spotId
+      : selectedUnloading === spotId;
+  };
 
   return (
     <View style={styles.container}>
-      {/* Header Section */}
       <View style={styles.header}>
-        <View style={styles.headerContainer}>
-          <View style={styles.titleContainer}>
-            {/* Back Button */}
-            <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-              <Ionicons name="arrow-back" size={24} color="white" />
-            </TouchableOpacity>
-            {/* Title */}
-            <Text style={styles.title}>Transport</Text>
-          </View>
-          <View>
-            {/* Subtitle */}
-            <Text style={styles.subtitle}>Book Your Destination:{'\n'}Journey Made Simple!</Text>
-          </View>
-        </View>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../../assets/bus.png')} // Correct path for the bus image
-            style={styles.busIcon}
-          />
-        </View>
+        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Transport</Text>
       </View>
 
-      {/* Loading Spots */}
       <View style={styles.spotsContainer}>
         <Text style={styles.spotTitle}>Loading Spots</Text>
         <View style={styles.imageRow}>
-          <TouchableOpacity onPress={() => handleLoadingPress(1)}>
-            <Image
-              source={require('../../assets/loading1.png')}
-              style={[
-                styles.spotImage,
-                isSelectedLoading(1) && styles.selectedImage,
-              ]}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleLoadingPress(2)}>
-            <Image
-              source={require('../../assets/loading2.png')}
-              style={[
-                styles.spotImage,
-                isSelectedLoading(2) && styles.selectedImage,
-              ]}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleLoadingPress(3)}>
-            <Image
-              source={require('../../assets/loading3.png')}
-              style={[
-                styles.spotPlaceholder,
-                isSelectedLoading(3) && styles.selectedImage,
-              ]}
-            />
-          </TouchableOpacity>
+          {loadingSpots.map((spot) => (
+            <TouchableOpacity
+              key={spot.id}
+              onPress={() => handleSpotPress('loading', spot.id)}
+            >
+              <Image
+                source={spot.image}
+                style={[
+                  styles.spotImage,
+                  isSelected('loading', spot.id) && styles.selectedImage,
+                ]}
+              />
+              <Text style={styles.spotText}>{spot.name}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
 
-      {/* Unloading Spots */}
       <View style={styles.spotsContainer}>
         <Text style={styles.spotTitle}>Unloading Spots</Text>
         <View style={styles.imageRow}>
-          <TouchableOpacity onPress={() => handleUnloadingPress(1)}>
-            <Image
-              source={require('../../assets/unloading1.png')}
-              style={[
-                styles.spotImage,
-                isSelectedUnloading(1) && styles.selectedImage,
-              ]}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleUnloadingPress(2)}>
-            <Image
-              source={require('../../assets/unloading2.png')}
-              style={[
-                styles.spotPlaceholder,
-                isSelectedUnloading(2) && styles.selectedImage,
-              ]}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleUnloadingPress(3)}>
-            <Image
-              source={require('../../assets/unloading3.png')}
-              style={[
-                styles.spotPlaceholder,
-                isSelectedUnloading(3) && styles.selectedImage,
-              ]}
-            />
-          </TouchableOpacity>
+          {unloadingSpots.map((spot) => (
+            <TouchableOpacity
+              key={spot.id}
+              onPress={() => handleSpotPress('unloading', spot.id)}
+            >
+              <Image
+                source={spot.image}
+                style={[
+                  styles.spotImage,
+                  isSelected('unloading', spot.id) && styles.selectedImage,
+                ]}
+              />
+              <Text style={styles.spotText}>{spot.name}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
 
-      {/* Book Now Button */}
       <TouchableOpacity
         style={[
           styles.bookButton,
-          !(selectedLoading && selectedUnloading) && { backgroundColor: '#A9A9A9' }, // Disabled color
+          !(selectedLoading && selectedUnloading) && { backgroundColor: '#A9A9A9' },
         ]}
         onPress={handleBookPress}
-        disabled={!(selectedLoading && selectedUnloading)} // Disable when not valid
+        disabled={!(selectedLoading && selectedUnloading)}
       >
         <Text style={styles.bookButtonText}>Book</Text>
       </TouchableOpacity>
@@ -147,39 +127,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerContainer: {
-    flex: 1,
-    flexDirection: 'column', // Align the back button and title horizontally
-    alignItems: 'start', // Align them vertically
-  },
-  titleContainer: {
-    flexDirection: 'row',
   },
   backButton: {
-    marginRight: 10, // Space between the back button and the title
+    marginRight: 10,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    textAlign: 'left',
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    textAlign: 'start',
-    marginTop: 10, // Space between the title/image and the subtitle
-  },
-  imageContainer: {
-    width: 150, // Width of the image container
-    overflow: 'hidden',
-  },
-  busIcon: {
-    width: 150,
-    height: 150,
-    resizeMode: 'contain',
   },
   spotsContainer: {
     marginVertical: 20,
@@ -200,36 +155,16 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 15,
-    backgroundColor: '#F0F4F8',
     borderWidth: 1,
     borderColor: '#D0D7E3',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 2, height: 2 },
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  spotPlaceholder: {
-    width: 90,
-    height: 90,
-    borderRadius: 15,
-    backgroundColor: '#E5E9F0',
-    borderWidth: 1,
-    borderColor: '#CBD5E0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 2, height: 2 },
-    shadowRadius: 5,
-    elevation: 3,
   },
   selectedImage: {
     borderWidth: 3,
     borderColor: '#81BFDA',
-    borderRadius: 15,
+  },
+  spotText: {
+    textAlign: 'center',
+    marginTop: 5,
   },
   bookButton: {
     backgroundColor: '#4B79A1',
