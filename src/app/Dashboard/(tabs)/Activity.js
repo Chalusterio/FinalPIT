@@ -4,6 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { db, auth } from '../../../config/firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import { format } from 'date-fns'; // Import date formatting library
 
 const { width } = Dimensions.get('window');
 
@@ -36,7 +37,13 @@ const Activity = () => {
 
         const userBookings = [];
         querySnapshot.forEach((doc) => {
-          userBookings.push({ id: doc.id, ...doc.data() });
+          const data = doc.data();
+          const date = data.timestamp?.toDate(); // Convert Firestore timestamp to JS Date object
+          userBookings.push({
+            id: doc.id,
+            ...data,
+            formattedDate: date ? format(date, 'PPP p') : 'No Date Provided', // Format date using date-fns
+          });
         });
 
         setBookings(userBookings);
@@ -61,7 +68,7 @@ const Activity = () => {
           <Text style={styles.bookingTitle}>
             Ride from {item.l_spot} to {item.ul_spot}
           </Text>
-          <Text style={styles.bookingDate}>{item.date || 'No Date Provided'}</Text>
+          <Text style={styles.bookingDate}>{item.formattedDate}</Text>
         </View>
       </View>
       <View style={styles.priceContainer}>
