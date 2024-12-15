@@ -1,8 +1,7 @@
-// Transport.js
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const Transport = () => {
   const [selectedLoading, setSelectedLoading] = useState(null);
@@ -21,8 +20,19 @@ const Transport = () => {
     { id: 3, name: 'Gusa', image: require('../../assets/unloading3.png') },
   ];
 
+  // Reset state when the screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      console.log('Screen is focused: resetting state');
+      setSelectedLoading(null);
+      setSelectedUnloading(null);
+    }, [])
+  );
+
   const handleBackPress = () => {
-    navigation.goBack();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   };
 
   const handleSpotPress = (spotType, spotId) => {

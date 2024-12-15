@@ -4,13 +4,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import { db, auth } from '../config/firebaseConfig'; // Ensure auth is imported
-import { useRouter } from 'expo-router'; // Import useRouter from expo-router
+import { db, auth } from '../config/firebaseConfig';
+import { useNavigation } from '@react-navigation/native'; // Use navigation hook
 
 const SelectPayment = () => {
-  const router = useRouter(); // Initialize router
+  const navigation = useNavigation(); // Initialize navigation
   const route = useRoute();
-
   const { loadingSpot, unloadingSpot } = route.params;
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -47,7 +46,6 @@ const SelectPayment = () => {
               // Fetch all bookings to determine the next booking ID
               const bookingsCollection = collection(db, 'bookings');
               const querySnapshot = await getDocs(bookingsCollection);
-
               const bookingID = querySnapshot.size + 1; // Increment the last ID
 
               const newBooking = {
@@ -67,9 +65,15 @@ const SelectPayment = () => {
               Alert.alert('Success', 'Your ticket has been successfully booked!', [
                 {
                   text: 'OK',
-                  onPress: () => router.push('/Dashboard/(tabs)'), // Correct route for the "Home" tab
+                  onPress: () => {
+                    // Reset the navigation stack and go back to index.js
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'Dashboard/(tabs)' }], // Replace 'Index' with your main screen's name
+                    });
+                  },
                 },
-              ]);              
+              ]);
             } catch (error) {
               console.error('Error saving booking: ', error);
               Alert.alert('Error', 'Failed to book your ticket. Please try again.');
@@ -83,7 +87,7 @@ const SelectPayment = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <Text style={styles.title}>Select Payment</Text>
