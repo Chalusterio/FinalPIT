@@ -1,32 +1,54 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { useNavigation } from '@react-navigation/native';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const AvailableCommuters = ({ navigation }) => {
-  // Commuter locations with IDs 1 through 7
+const AvailableCommuters = () => {
+  const navigation = useNavigation();
+
+  // Sample commuter locations with booking details
   const commuterLocations = [
-    { id: 1, name: 'Bolonsiri Rd', latitude: 8.482, longitude: 124.641 },
-    { id: 2, name: 'Cogon Public Market', latitude: 8.4788, longitude: 124.6327 },
-    { id: 3, name: 'Centrio Mall', latitude: 8.479, longitude: 124.645 },
-    { id: 4, name: 'Jollibee Agora Market', latitude: 8.485, longitude: 124.652 },
-    { id: 5, name: 'Puntod', latitude: 8.471, longitude: 124.657 },
-    { id: 6, name: 'Lapasan', latitude: 8.4833, longitude: 124.6617 },
-    { id: 7, name: 'Final Destination', latitude: 8.47954, longitude: 124.67299 },
-  ];
-
-  // Route coordinates connecting all IDs
-  const routeCoordinates = [
-    { latitude: 8.482, longitude: 124.641 }, // id:1
-    { latitude: 8.4788, longitude: 124.6327 }, // id:2
-    { latitude: 8.479, longitude: 124.645 }, // id:3
-    { latitude: 8.485, longitude: 124.652 }, // id:4
-    { latitude: 8.471, longitude: 124.657 }, // id:5
-    { latitude: 8.4833, longitude: 124.6617 }, // id:6
-    { latitude: 8.47954, longitude: 124.67299 }, // id:7
+    {
+      id: 1,
+      name: 'Bolonsiri Rd',
+      latitude: 8.482,
+      longitude: 124.641,
+      bookings: ['Juan Dela Cruz', 'Maria Clara'],
+    },
+    {
+      id: 2,
+      name: 'Cogon Public Market',
+      latitude: 8.480,
+      longitude: 124.645,
+      bookings: ['Jose Rizal', 'Andres Bonifacio'],
+    },
+    {
+      id: 3,
+      name: 'Centrio Mall',
+      latitude: 8.479,
+      longitude: 124.645,
+      bookings: ['Emilio Aguinaldo'],
+    },
+    {
+      id: 4,
+      name: 'Jollibee Agora Market',
+      latitude: 8.485,
+      longitude: 124.652,
+      bookings: [],
+    },
+    {
+      id: 5,
+      name: 'Puntod',
+      latitude: 8.471,
+      longitude: 124.657,
+      bookings: ['Gregoria de Jesus'],
+    },
   ];
 
   const handleMarkerPress = (location) => {
-    navigation.navigate('LocationDetails', { location }); // Navigate and pass location details
+    navigation.navigate('LocationDetails', { location });
   };
 
   return (
@@ -34,34 +56,37 @@ const AvailableCommuters = ({ navigation }) => {
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: 8.48,
-          longitude: 124.655,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
+          latitude: 8.479,
+          longitude: 124.645,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
         }}
       >
-        {/* Markers for all commuter locations */}
         {commuterLocations.map((location) => (
           <Marker
             key={location.id}
-            coordinate={{ latitude: location.latitude, longitude: location.longitude }}
+            coordinate={{
+              latitude: location.latitude,
+              longitude: location.longitude,
+            }}
             title={location.name}
-            onPress={() => handleMarkerPress(location)} // Pass location details on marker click
-          >
-            <Image
-              source={
-                location.id === 7
-                  ? require('../../assets/bus.png') // Custom bus icon for the final destination
-                  : require('../../assets/location.png') // Default icon for other locations
-              }
-              style={styles.markerImage}
-            />
-          </Marker>
+            onPress={() => handleMarkerPress(location)}
+          />
         ))}
-
-        {/* Polyline connecting all locations */}
-        <Polyline coordinates={routeCoordinates} strokeColor="green" strokeWidth={5} />
       </MapView>
+      <View style={styles.list}>
+        {commuterLocations.map((location) => (
+          <TouchableOpacity
+            key={location.id}
+            style={styles.listItem}
+            onPress={() => handleMarkerPress(location)}
+          >
+            <EvilIcons name="location" size={24} color="#4B79A1" />
+            <Text style={styles.listItemText}>{location.name}</Text>
+            <Ionicons name="man-outline" size={24} color="#4B79A1" style={styles.iconSpacing} />
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 };
@@ -73,10 +98,22 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  markerImage: {
-    width: 30,
-    height: 30,
-    resizeMode: 'contain',
+  list: {
+    backgroundColor: '#fff',
+    padding: 10,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  listItemText: {
+    fontSize: 16,
+    marginLeft: 10,
+    flex: 1, // Ensures proper spacing
+  },
+  iconSpacing: {
+    marginLeft: 10, // Adds space between the text and the icon
   },
 });
 
