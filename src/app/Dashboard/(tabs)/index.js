@@ -55,25 +55,25 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#4B79A1',
-    paddingVertical: height * 0.03, // Dynamic padding based on screen height
-    paddingHorizontal: width * 0.05, // Dynamic horizontal padding
+    paddingVertical: height * 0.03,
+    paddingHorizontal: width * 0.05,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   textContainer: {
     flex: 1,
-    paddingRight: width * 0.05, // Spacing between text and image
+    paddingRight: width * 0.05,
   },
   title: {
-    fontSize: width * 0.07, // Dynamic font size
+    fontSize: width * 0.07,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'left',
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: width * 0.04, // Dynamic font size
+    fontSize: width * 0.04,
     color: '#FFFFFF',
     textAlign: 'left',
   },
@@ -83,23 +83,20 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   bookNowContainer: {
-    position: 'absolute',
-    bottom: height * 0.04, 
-    left: width * 0.05,   
-    right: width * 0.05,  
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: height * -0.05, // Move container slightly upward
   },
-  
   busCircleContainer: {
-    width: width * 0.25,      // Reduced width
-    height: width * 0.25,     // Reduced height
-    borderRadius: width * 0.125, // Half of width/height to maintain a circle
+    width: width * 0.4,
+    height: width * 0.4,
+    borderRadius: width * 0.2,
     backgroundColor: '#D9EAFD',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: height * 0.05, // Adjusted space below the circle
+    marginBottom: height * 0.02,
   },
-  
   busCircleIcon: {
     width: width * 0.3,
     height: width * 0.2,
@@ -110,7 +107,7 @@ const styles = StyleSheet.create({
     paddingVertical: height * 0.015,
     paddingHorizontal: width * 0.2,
     borderRadius: width * 0.1,
-    elevation: 10, // Add shadow effect
+    elevation: 10,
   },
   bookNowText: {
     fontSize: width * 0.045,

@@ -1,21 +1,48 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 
+const { height, width } = Dimensions.get('window');
+
 const PaymentMethods = () => {
   const router = useRouter();
-  
-  const [gcashNumber, setGcashNumber] = useState(''); // State for GCash number
-  const [cardNumber, setCardNumber] = useState(''); // State for Card number
-  const [isGcashLinked, setIsGcashLinked] = useState(false); // Track GCash link state
-  const [isCardLinked, setIsCardLinked] = useState(false); // Track Card link state
+
+  const [gcashNumber, setGcashNumber] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [isGcashLinked, setIsGcashLinked] = useState(false);
+  const [isCardLinked, setIsCardLinked] = useState(false);
+
+  const scaleClose = new Animated.Value(1);
+
+  const handlePressIn = (animatedValue) => {
+    Animated.spring(animatedValue, {
+      toValue: 0.9,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = (animatedValue, action) => {
+    Animated.spring(animatedValue, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start(() => action());
+  };
+
+  const handleClose = () => {
+    router.back();
+  };
 
   const handleSave = () => {
-    // Saving logic for GCash and Card numbers
     console.log('Payment methods saved:', { gcashNumber, cardNumber });
-
-    // Assume saving is successful; mark both as linked
     if (gcashNumber) setIsGcashLinked(true);
     if (cardNumber) setIsCardLinked(true);
   };
@@ -32,13 +59,20 @@ const PaymentMethods = () => {
 
   return (
     <View style={styles.container}>
-      {/* Back Arrow */}
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <MaterialIcons name="arrow-back" size={24} color="#4B79A1" />
-      </TouchableOpacity>
-
-      {/* Title */}
-      <Text style={styles.title}>Edit Payment Methods</Text>
+      {/* Header Section */}
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <Animated.View style={{ transform: [{ scale: scaleClose }] }}>
+            <TouchableOpacity
+              onPressIn={() => handlePressIn(scaleClose)}
+              onPressOut={() => handlePressOut(scaleClose, handleClose)}
+            >
+              <MaterialIcons name="close" size={28} color="#4B79A1" />
+            </TouchableOpacity>
+          </Animated.View>
+          <Text style={styles.headerText}>Edit Payment Methods</Text>
+        </View>
+      </View>
 
       {/* GCash Section */}
       <Text style={styles.label}>GCash Number</Text>
@@ -79,7 +113,9 @@ const PaymentMethods = () => {
       )}
 
       {/* Save Button */}
-      <Button title="Save Payment Methods" onPress={handleSave} />
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Save Payment Methods</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -87,48 +123,107 @@ const PaymentMethods = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingTop: height * 0.12,
     backgroundColor: '#EAF2F8',
   },
-  backButton: {
-    marginBottom: 20,
+  header: {
+    height: height * 0.12,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'flex-end',
+    paddingBottom: height * 0.02,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E4E8',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    elevation: 5,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 20,
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.04,
+  },
+  headerText: {
+    textAlign: 'center',
+    fontSize: width * 0.06,
+    fontWeight: '700',
     color: '#4B79A1',
+    flex: 1,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#4B79A1',
-  },
+  fontSize: 16,
+  color: '#4B79A1',
+  marginBottom: 8,
+  fontWeight: '600',
+  marginHorizontal: width * 0.04,
+  marginTop: height * 0.02, // Add this line to push the label down slightly
+},
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
+    borderColor: '#CCC',
+    borderRadius: 10,
+    padding: 14,
     marginBottom: 20,
-    borderRadius: 5,
-    backgroundColor: '#fff',
+    marginHorizontal: width * 0.04,
+    backgroundColor: '#FFFFFF',
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   linkedContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#DFF0D8',
-    padding: 10,
-    borderRadius: 5,
+    padding: 15,
+    marginHorizontal: width * 0.04,
     marginBottom: 20,
+    borderRadius: 10,
+    backgroundColor: 'linear-gradient(90deg, #E3F4FF 0%, #BDE7FF 100%)',
+    borderColor: '#4B79A1',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
   },
   linkedText: {
     fontSize: 16,
     color: '#4B79A1',
+    fontWeight: '500',
   },
   unlinkButton: {
-    color: '#D9534F',
-    fontWeight: '600',
+    fontSize: 16,
+    color: '#FA4032',
+    fontWeight: '700',
+    textDecorationLine: 'underline',
+  },
+  saveButton: {
+    backgroundColor: '#4B79A1',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginHorizontal: width * 0.04,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
 });
+
 
 export default PaymentMethods;
