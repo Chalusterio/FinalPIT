@@ -83,20 +83,23 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   bookNowContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    position: 'absolute',
+    bottom: height * 0.04, 
+    left: width * 0.05,   
+    right: width * 0.05,  
     alignItems: 'center',
-    marginTop: height * -0.05, // Move container slightly upward
   },
+  
   busCircleContainer: {
-    width: width * 0.4,
-    height: width * 0.4,
-    borderRadius: width * 0.2,
+    width: width * 0.25,      // Reduced width
+    height: width * 0.25,     // Reduced height
+    borderRadius: width * 0.125, // Half of width/height to maintain a circle
     backgroundColor: '#D9EAFD',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: height * 0.02, // Space between circle and button
+    marginBottom: height * 0.05, // Adjusted space below the circle
   },
+  
   busCircleIcon: {
     width: width * 0.3,
     height: width * 0.2,
