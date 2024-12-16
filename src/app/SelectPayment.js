@@ -1,331 +1,204 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Alert,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  ScrollView,
-  Modal,
-} from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useRoute } from '@react-navigation/native';
+import { collection, addDoc, getDocs, serverTimestamp } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../config/firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const SelectPayment = () => {
-  const [selectedPayment, setSelectedPayment] = useState(null);
-  const [isConfirmed, setIsConfirmed] = useState(false); // Modal visibility state
-  const [route, setRoute] = useState('SM Downtown Premiere - Dunkin Gusa'); // Example route
   const navigation = useNavigation();
+  const route = useRoute();
+  const { loadingSpot, unloadingSpot } = route.params;
+  const [currentUser, setCurrentUser] = useState(null);
 
-  // Example for backend fetch
-  useEffect(() => {
-    // Simulated backend fetch - replace with actual API call when needed
-    setTimeout(() => {
-      setRoute('SM Downtown Premiere - Dunkin Gusa'); // Set example route
-    }, 1000);
+  // Fetch the current logged-in user
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    return unsubscribe;
   }, []);
 
-  const handlePaymentSelect = (method) => {
-    setSelectedPayment(method);
-  };
-
-  const handleBook = () => {
-    if (selectedPayment) {
-      setIsConfirmed(true); // Show the confirmation modal
-    } else {
-      Alert.alert('Error', 'Please select a payment method.');
+  const handlePaymentSelect = (paymentMethod) => {
+    if (!currentUser) {
+      Alert.alert('Error', 'You must be logged in to book a ticket.');
+      return;
     }
-  };
 
-  const closeModal = () => {
-    setIsConfirmed(false); // Close modal
-    navigation.navigate('Dashboard/(tabs)', { screen: 'index' }); // Navigate to index.js in Dashboard (tabs)
+    Alert.alert(
+      'Confirm Payment',
+      `You have selected ${paymentMethod} as your payment method. Do you want to confirm?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: async () => {
+            try {
+              // Fetch all bookings to determine the next booking ID
+              const bookingsCollection = collection(db, 'bookings');
+              const querySnapshot = await getDocs(bookingsCollection);
+              const bookingID = querySnapshot.size + 1; // Increment the last ID
+
+              const newBooking = {
+                bookingID,
+                l_spot: loadingSpot.name,
+                ul_spot: unloadingSpot.name,
+                payment_method: paymentMethod,
+                price: 12, // Static value
+                status: 'Ongoing', // Static value
+                userID: currentUser.uid, // Add the logged-in user's ID
+                timestamp: serverTimestamp(), // Add timestamp here
+              };
+
+              // Add the booking to Firestore
+              await addDoc(bookingsCollection, newBooking);
+
+              // Show success pop-up
+              Alert.alert('Success', 'Your ticket has been successfully booked!', [
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'Dashboard/(tabs)' }],
+                    });
+                  },
+                },
+              ]);
+            } catch (error) {
+              console.error('Error saving booking: ', error);
+              Alert.alert('Error', 'Failed to book your ticket. Please try again.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
-    <View style={styles.background}>
-      {/* Header Section */}
+    <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialIcons name="close" size={28} color="#4B79A1" />
-          </TouchableOpacity>
-          <Text style={styles.headerText}>Select Payment</Text>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Select Payment</Text>
+      </View>
+
+      <View style={styles.spotDetailsContainer}>
+        <View style={styles.spotDetail}>
+          <Text style={styles.spotLabel}>Loading Spot</Text>
+          <Image source={loadingSpot.image} style={styles.spotImage} />
+          <Text style={styles.spotName}>{loadingSpot.name}</Text>
+        </View>
+        <View style={styles.spotDetail}>
+          <Text style={styles.spotLabel}>Unloading Spot</Text>
+          <Image source={unloadingSpot.image} style={styles.spotImage} />
+          <Text style={styles.spotName}>{unloadingSpot.name}</Text>
         </View>
       </View>
 
-      {/* Main Content */}
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Location Details */}
-        <View style={[styles.card, styles.shadow]}>
-          <Image
-            source={require('../../assets/loading2.png')}
-            style={styles.locationImage}
-          />
-          <Text style={styles.text}>Location 1: SM Downtown Premiere</Text>
+      <Text style={styles.paymentTitle}>Choose a Payment Method</Text>
 
-          <Image
-            source={require('../../assets/unloading3.png')}
-            style={styles.locationImage}
-          />
-          <Text style={styles.text}>Location 2: Dunkin Gusa</Text>
-        </View>
-
-        {/* Bus & Fare Details */}
-        <View style={[styles.card, styles.shadow]}>
-          <View style={styles.busInfo}>
-            <Text style={styles.text}>Bus</Text>
-            <Text style={styles.price}>₱12.00</Text>
-          </View>
-        </View>
-
-        {/* Payment Selection */}
-        <View style={styles.card}>
-          <Text style={styles.text}>Payment Method:</Text>
-          <View style={styles.paymentOptions}>
-            <TouchableOpacity
-              style={[
-                styles.paymentButton,
-                selectedPayment === 'Cards' && styles.selected,
-              ]}
-              onPress={() => handlePaymentSelect('Cards')}
-            >
-              <Text
-                style={[
-                  styles.paymentText,
-                  selectedPayment === 'Cards' && styles.selectedText,
-                ]}
-              >
-                Cards
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.paymentButton,
-                selectedPayment === 'GCash' && styles.selected,
-              ]}
-              onPress={() => handlePaymentSelect('GCash')}
-            >
-              <Text
-                style={[
-                  styles.paymentText,
-                  selectedPayment === 'GCash' && styles.selectedText,
-                ]}
-              >
-                GCash
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Booking Button */}
-        <TouchableOpacity style={styles.bookButton} onPress={handleBook}>
-          <Text style={styles.bookButtonText}>Book</Text>
+      <View style={styles.paymentMethodsContainer}>
+        <TouchableOpacity
+          style={styles.paymentButton}
+          onPress={() => handlePaymentSelect('Cash')}
+        >
+          <Text style={styles.paymentButtonText}>Cash</Text>
         </TouchableOpacity>
-      </ScrollView>
-
-      {/* Confirmation Modal */}
-      <Modal visible={isConfirmed} transparent animationType="slide">
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalCard}>
-              <View style={styles.busInfo}>
-                <MaterialIcons name="directions-bus" size={28} color="#4B79A1" />
-                <View style={styles.busDetails}>
-                  {route && (
-                    <>
-                      {/* Split the route into two lines */}
-                      <Text style={styles.routeText}>
-                        {route.split(' - ')[0]}
-                      </Text>
-                      <Text style={styles.routeText}>
-                        - {route.split(' - ')[1]}
-                      </Text>
-                    </>
-                  )}
-                </View>
-                <Text style={styles.price}>₱12.00</Text>
-              </View>
-            </View>
-            <Text style={styles.confirmText}>
-              Your Booking has been confirmed!
-            </Text>
-            <FontAwesome6 name="check-circle" size={60} color="#A1EEBD" />
-            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        <TouchableOpacity
+          style={styles.paymentButton}
+          onPress={() => handlePaymentSelect('Credit Card')}
+        >
+          <Text style={styles.paymentButtonText}>Credit Card</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.paymentButton}
+          onPress={() => handlePaymentSelect('E-Wallet')}
+        >
+          <Text style={styles.paymentButtonText}>E-Wallet</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
-// Stylesheet
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
     backgroundColor: '#EAF2F8',
   },
   header: {
-    height: 100,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'flex-end',
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    elevation: 2,
-  },
-  headerContent: {
+    backgroundColor: '#4B79A1',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
   },
-  headerText: {
+  backButton: {
+    marginRight: 10,
+  },
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#4B79A1',
-    flex: 1,
-    textAlign: 'center',
+    color: '#FFFFFF',
   },
-  content: {
-    padding: 20,
-    paddingBottom: 100,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  },
-  busInfo: {
+  spotDetailsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
+    justifyContent: 'space-around',
+    marginVertical: 20,
   },
-  routeText: {
+  spotDetail: {
+    alignItems: 'center',
+  },
+  spotLabel: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#4B79A1',
-    textAlign: 'center',
-    marginTop: 2,
-  },
-  price: {
-    fontSize: 20,
     fontWeight: 'bold',
-    color: '#4B79A1',
-    marginTop: 5,
-  },
-  locationImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 12,
+    color: '#333333',
     marginBottom: 10,
-    borderColor: '#ddd',
-    borderWidth: 1,
   },
-  paymentOptions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 15,
-  },
-  paymentButton: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: '#F7F9FC',
-    marginHorizontal: 5,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+  spotImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#D0D7E3',
-    transform: [{ scale: 1 }],
   },
-  paymentText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#4B79A1',
-  },
-  selected: {
-    backgroundColor: '#4B79A1',
-    borderColor: '#FFFFFF',
-    borderWidth: 2,
-    elevation: 3,
-  },
-  selectedText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  bookButton: {
-    backgroundColor: '#4B79A1',
-    borderRadius: 25,
-    paddingVertical: 12,
-    alignSelf: 'center',
-    width: '90%',
-    marginTop: 20,
-    elevation: 2,
-  },
-  bookButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+  spotName: {
+    marginTop: 10,
+    fontSize: 14,
     textAlign: 'center',
   },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '90%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  },
-  modalCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
-    width: '100%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  },
-  confirmText: {
+  paymentTitle: {
     fontSize: 20,
-    fontWeight: '700',
-    color: '#4B79A1',
-    marginVertical: 15,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'center',
+    marginVertical: 20,
   },
-  closeButton: {
-    marginTop: 20,
+  paymentMethodsContainer: {
+    marginHorizontal: 20,
+  },
+  paymentButton: {
     backgroundColor: '#4B79A1',
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 10,
+    padding: 15,
+    borderRadius: 12,
+    marginVertical: 10,
+    alignItems: 'center',
   },
-  closeButtonText: {
+  paymentButtonText: {
     color: '#FFFFFF',
-    fontWeight: '700',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
