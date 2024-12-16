@@ -61,6 +61,13 @@ const LogIn = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Check for specific credentials
+      if (email === 'jofafs123@gmail.com' && password === 'kingking') {
+        Alert.alert('Login Successful', 'Redirecting to DashboardDriver');
+        router.replace('/DashboardDriver'); // Redirect to DashboardDriver
+        return;
+      }
+
       // Fetch user's first and last name from Firestore
       const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
