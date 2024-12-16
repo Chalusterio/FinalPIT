@@ -111,12 +111,6 @@ const SelectPayment = () => {
       <View style={styles.paymentMethodsContainer}>
         <TouchableOpacity
           style={styles.paymentButton}
-          onPress={() => handlePaymentSelect('Cash')}
-        >
-          <Text style={styles.paymentButtonText}>Cash</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.paymentButton}
           onPress={() => handlePaymentSelect('Credit Card')}
         >
           <Text style={styles.paymentButtonText}>Credit Card</Text>
