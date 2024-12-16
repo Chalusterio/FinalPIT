@@ -1,19 +1,58 @@
-import React from 'react';
-import { View, StyleSheet, Animated, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+} from 'react-native';
 import { Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
+import { auth } from '../../../../src/config/firebaseConfig'; // Firebase Auth
+import { getDoc, doc } from 'firebase/firestore'; // Firestore
+import { db } from '../../../../src/config/firebaseConfig'; // Firestore Config
 
 const { width } = Dimensions.get('window');
 
 const AccountDriver = () => {
   const router = useRouter();
+  const [scaleEdit] = useState(new Animated.Value(1));
+  const [scaleSettings] = useState(new Animated.Value(1));
+  const [scaleWalapa] = useState(new Animated.Value(1));
+  const [scaleEmergencyContacts] = useState(new Animated.Value(1));
 
-  const [scaleEdit] = React.useState(new Animated.Value(1));
-  const [scaleSettings] = React.useState(new Animated.Value(1));
-  const [scalePayment] = React.useState(new Animated.Value(1));
-  const [scalePlaces] = React.useState(new Animated.Value(1));
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null); // State for profile picture
+
+  // Fetch user details from Firestore
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser; // Get currently authenticated user
+        if (user) {
+          const userDocRef = doc(db, 'users', user.uid); // Reference to the driver's document
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setFirstName(userData.firstName || '');
+            setLastName(userData.lastName || '');
+            setProfilePicture(userData.profilePicture || null); // Set profile picture
+          } else {
+            console.error('Driver document does not exist.');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching driver data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handlePressIn = (scale) => {
     Animated.spring(scale, {
@@ -43,7 +82,7 @@ const AccountDriver = () => {
     router.push('/Walapa');
   };
 
-  const handleWalapa1 = () => {
+  const handleEmergencyContacts = () => {
     router.push('/EmeConDriver');
   };
 
@@ -52,11 +91,17 @@ const AccountDriver = () => {
       <View style={styles.container}>
         <View style={styles.userInfoContainer}>
           <Image
-            source={require('../../../../assets/avatar.png')}
+            source={
+              profilePicture
+                ? { uri: profilePicture } // Use the profile picture URL
+                : require('../../../../assets/avatar.png') // Default avatar
+            }
             style={styles.avatar}
           />
           <View style={styles.userDetails}>
-            <Text style={styles.userName}>Charlene Lusterio</Text>
+            <Text style={styles.userName}>
+              {firstName} {lastName}
+            </Text>
             <Animated.View style={{ transform: [{ scale: scaleEdit }] }}>
               <TouchableOpacity
                 onPressIn={() => handlePressIn(scaleEdit)}
@@ -70,20 +115,22 @@ const AccountDriver = () => {
         </View>
 
         <Text style={styles.sectionTitle}>My Account</Text>
-        <Animated.View style={{ transform: [{ scale: scalePayment }] }}>
+        <Animated.View style={{ transform: [{ scale: scaleWalapa }] }}>
           <TouchableOpacity
-            onPressIn={() => handlePressIn(scalePayment)}
-            onPressOut={() => handlePressOut(scalePayment, handleWalapa)}
+            onPressIn={() => handlePressIn(scaleWalapa)}
+            onPressOut={() => handlePressOut(scaleWalapa, handleWalapa)}
             style={styles.option}
           >
             <Text style={styles.optionText}>Wala pa</Text>
             <MaterialIcons name="chevron-right" size={24} color="#4B79A1" />
           </TouchableOpacity>
         </Animated.View>
-        <Animated.View style={{ transform: [{ scale: scalePlaces }] }}>
+        <Animated.View style={{ transform: [{ scale: scaleEmergencyContacts }] }}>
           <TouchableOpacity
-            onPressIn={() => handlePressIn(scalePlaces)}
-            onPressOut={() => handlePressOut(scalePlaces, handleWalapa1)}
+            onPressIn={() => handlePressIn(scaleEmergencyContacts)}
+            onPressOut={() =>
+              handlePressOut(scaleEmergencyContacts, handleEmergencyContacts)
+            }
             style={styles.option}
           >
             <Text style={styles.optionText}>Emergency Contacts</Text>

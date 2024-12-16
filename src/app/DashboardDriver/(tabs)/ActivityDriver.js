@@ -1,52 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome for icons
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Button } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const ActivityDriver = () => {
   const [bookings, setBookings] = useState([]); // Stores bookings from the backend
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(false); // Loading state
+  const [buttonState, setButtonState] = useState('Time In'); // Tracks button state
 
-  useEffect(() => {
-    // Simulate a backend API call with mock data
-    const fetchBookings = async () => {
-      setLoading(true);
-      try {
-        // Mock data to simulate a response from the backend
-        const data = [
-          { id: 1, title: "Drive to USTP", date: "04 Dec 2024, 15:00", price: 69.0 },
-          { id: 2, title: "Drive to Snooks", date: "04 Dec 2024, 15:00", price: 100.0 },
-          { id: 3, title: "Drive to DTL", date: "04 Dec 2024, 15:00", price: 69.0 },
-          { id: 4, title: "Drive to SM Uptown", date: "04 Dec 2024, 15:00", price: 110.0 },
-        ];
-        setBookings(data); // Update bookings state
-      } catch (error) {
-        console.error("Error fetching bookings:", error);
-      } finally {
-        setLoading(false); // Stop loading spinner
+  const db = getFirestore(); // Firestore instance
+  const auth = getAuth(); // Firebase Auth instance
+
+  const handleButtonClick = async () => {
+    try {
+      const currentUser = auth.currentUser; // Get the currently logged-in user
+
+      if (!currentUser) {
+        console.error('No user is currently logged in');
+        return;
       }
-    };
 
-    fetchBookings();
-  }, []);
+      const newState = buttonState === 'Time In' ? 'Time Out' : 'Time In';
 
-  // Renders individual booking items
-  const renderBookingItem = ({ item }) => (
-    <TouchableOpacity style={styles.bookingItem}>
-      <View style={styles.bookingInfo}>
-        <FontAwesome name="bus" size={24} color="black" style={styles.busIcon} />
-        <View>
-          <Text style={styles.bookingTitle}>{item.title}</Text>
-          <Text style={styles.bookingDate}>{item.date}</Text>
-        </View>
-      </View>
-      <View style={styles.priceContainer}>
-        <Text style={styles.bookingPrice}>₱{item.price}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+      // Save data to Firestore
+      await addDoc(collection(db, 'driverTito'), {
+        type: buttonState, // Save current state (before toggling)
+        userID: currentUser.uid, // Save the user ID
+        createdAt: serverTimestamp(), // Save the timestamp
+      });
+
+      // Update button state
+      setButtonState(newState);
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
 
   if (loading) {
-    // Show loading spinner while fetching data
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#4B79A1" />
@@ -59,13 +50,33 @@ const ActivityDriver = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.sectionTitle}>Activity</Text>
-        {bookings.length > 0 && <Text style={styles.sectionSubtitle}>Recent</Text>}
+        <Text style={styles.sectionSubtitle}>Recent</Text>
       </View>
+
+      <Button
+        title={buttonState}
+        onPress={handleButtonClick}
+        color={buttonState === 'Time In' ? '#4CAF50' : '#F44336'}
+      />
+
       {bookings.length > 0 ? (
         <FlatList
           data={bookings}
-          keyExtractor={(item) => item.id.toString()} // Use `id` as a unique key
-          renderItem={renderBookingItem} // Render individual booking items
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.bookingItem}>
+              <View style={styles.bookingInfo}>
+                <FontAwesome name="bus" size={24} color="black" style={styles.busIcon} />
+                <View>
+                  <Text style={styles.bookingTitle}>{item.title}</Text>
+                  <Text style={styles.bookingDate}>{item.date}</Text>
+                </View>
+              </View>
+              <View style={styles.priceContainer}>
+                <Text style={styles.bookingPrice}>₱{item.price}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
           contentContainerStyle={styles.listContainer}
         />
       ) : (

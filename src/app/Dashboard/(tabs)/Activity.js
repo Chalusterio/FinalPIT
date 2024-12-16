@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Button, Dimensions } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { db, auth } from '../../../config/firebaseConfig';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import { format } from 'date-fns'; // Import date formatting library
+import { format } from 'date-fns';
 
 const { width } = Dimensions.get('window');
 
 const Activity = () => {
-  const [bookings, setBookings] = useState([]); // State for user bookings
-  const [loading, setLoading] = useState(true); // Loading indicator
-  const [currentUser, setCurrentUser] = useState(null); // Current user state
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null); // Track selected booking
 
-  // Fetch the current logged-in user
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -25,24 +25,23 @@ const Activity = () => {
     return unsubscribe;
   }, []);
 
-  // Fetch user's bookings from Firestore
   useEffect(() => {
     const fetchUserBookings = async () => {
       if (!currentUser) return;
 
       try {
         const bookingsRef = collection(db, 'bookings');
-        const q = query(bookingsRef, where('userID', '==', currentUser.uid)); // Query only for current user
+        const q = query(bookingsRef, where('userID', '==', currentUser.uid));
         const querySnapshot = await getDocs(q);
 
         const userBookings = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          const date = data.timestamp?.toDate(); // Convert Firestore timestamp to JS Date object
+          const date = data.timestamp?.toDate();
           userBookings.push({
             id: doc.id,
             ...data,
-            formattedDate: date ? format(date, 'PPP p') : 'No Date Provided', // Format date using date-fns
+            formattedDate: date ? format(date, 'PPP p') : 'No Date Provided',
           });
         });
 
@@ -57,11 +56,28 @@ const Activity = () => {
     if (currentUser) {
       fetchUserBookings();
     }
-  }, [currentUser]); // Re-run when currentUser changes
+  }, [currentUser]);
 
-  // Render each booking item
+  const handleStatusChange = async (bookingId) => {
+    try {
+      const bookingDocRef = doc(db, 'bookings', bookingId);
+      await updateDoc(bookingDocRef, { status: 'Completed' });
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id === bookingId ? { ...booking, status: 'Completed' } : booking
+        )
+      );
+      setSelectedBooking(null); // Deselect booking after update
+    } catch (error) {
+      console.error('Error updating booking:', error);
+    }
+  };
+
   const renderBookingItem = ({ item }) => (
-    <TouchableOpacity style={styles.bookingItem} accessibilityLabel={`Booking item: ${item.title}`}>
+    <TouchableOpacity
+      style={[styles.bookingItem, selectedBooking === item.id && styles.selectedBookingItem]}
+      onPress={() => setSelectedBooking(selectedBooking === item.id ? null : item.id)}
+    >
       <View style={styles.bookingInfo}>
         <FontAwesome name="bus" size={24} color="black" style={styles.busIcon} />
         <View>
@@ -69,6 +85,7 @@ const Activity = () => {
             Ride from {item.l_spot} to {item.ul_spot}
           </Text>
           <Text style={styles.bookingDate}>{item.formattedDate}</Text>
+          <Text style={styles.bookingType}>Status: {item.status}</Text>
         </View>
       </View>
       <View style={styles.priceContainer}>
@@ -77,7 +94,6 @@ const Activity = () => {
     </TouchableOpacity>
   );
 
-  // Loading indicator while fetching data
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -87,7 +103,6 @@ const Activity = () => {
     );
   }
 
-  // Render main content
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -107,6 +122,15 @@ const Activity = () => {
           <Text style={styles.noBookingsSubText}>Start your journey by booking your first ride!</Text>
         </View>
       )}
+      {selectedBooking && (
+        <View style={styles.actionButtonContainer}>
+          <Button
+            title="Mark as Completed"
+            onPress={() => handleStatusChange(selectedBooking)}
+            color="#4B79A1"
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -115,7 +139,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EAF2F8',
-    padding: width * 0.05, // Responsive padding
+    padding: width * 0.05,
   },
   loaderContainer: {
     flex: 1,
@@ -156,6 +180,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     elevation: 4,
   },
+  selectedBookingItem: {
+    backgroundColor: '#BFD9E5',
+  },
   bookingInfo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -171,6 +198,11 @@ const styles = StyleSheet.create({
   bookingDate: {
     fontSize: 14,
     color: '#666',
+    marginTop: 5,
+  },
+  bookingType: {
+    fontSize: 14,
+    color: '#4B79A1',
     marginTop: 5,
   },
   priceContainer: {
@@ -198,6 +230,10 @@ const styles = StyleSheet.create({
   noBookingsSubText: {
     fontSize: 16,
     color: '#666',
+  },
+  actionButtonContainer: {
+    padding: 20,
+    backgroundColor: '#EAF2F8',
   },
 });
 
