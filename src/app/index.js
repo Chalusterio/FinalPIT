@@ -62,9 +62,7 @@ const LogIn = () => {
       const user = userCredential.user;
 
       // Check for specific credentials
-
       if (email === 'jofafs123@gmail.com' && password === 'kingking') {
-
         Alert.alert('Login Successful', 'Redirecting to DashboardDriver');
         router.replace('/DashboardDriver'); // Redirect to DashboardDriver
         return;
