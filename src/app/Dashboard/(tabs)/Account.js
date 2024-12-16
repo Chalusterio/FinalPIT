@@ -79,8 +79,9 @@ const Account = () => {
   };
 
   const handlePaymentMethods = () => {
-    router.push('/PaymentMed');
+    router.push('/PaymentMethods');
   };
+  
 
   const handleSavedPlaces = () => {
     router.push('/EmergencyContacts');
