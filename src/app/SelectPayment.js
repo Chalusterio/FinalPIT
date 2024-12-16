@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, serverTimestamp } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { db, auth } from '../config/firebaseConfig';
-import { useNavigation } from '@react-navigation/native'; // Use navigation hook
+import { useNavigation } from '@react-navigation/native';
 
 const SelectPayment = () => {
-  const navigation = useNavigation(); // Initialize navigation
+  const navigation = useNavigation();
   const route = useRoute();
   const { loadingSpot, unloadingSpot } = route.params;
   const [currentUser, setCurrentUser] = useState(null);
@@ -56,6 +56,7 @@ const SelectPayment = () => {
                 price: 12, // Static value
                 status: 'Ongoing', // Static value
                 userID: currentUser.uid, // Add the logged-in user's ID
+                timestamp: serverTimestamp(), // Add timestamp here
               };
 
               // Add the booking to Firestore
@@ -66,10 +67,9 @@ const SelectPayment = () => {
                 {
                   text: 'OK',
                   onPress: () => {
-                    // Reset the navigation stack and go back to index.js
                     navigation.reset({
                       index: 0,
-                      routes: [{ name: 'Dashboard/(tabs)' }], // Replace 'Index' with your main screen's name
+                      routes: [{ name: 'Dashboard/(tabs)' }],
                     });
                   },
                 },
