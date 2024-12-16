@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 
+
 const { width, height } = Dimensions.get('window');
+
 
 const Home = () => {
   const navigation = useNavigation();
+  const [animatedCoordinates, setAnimatedCoordinates] = useState([]);
+
 
   const handleBookNowClick = () => {
-    navigation.navigate('Transport'); 
+    navigation.navigate('Transport');
   };
+
 
   // Coordinates for the route
   const routeCoordinates = [
@@ -22,13 +27,31 @@ const Home = () => {
     { latitude: 8.477177781842084, longitude: 124.67711743736216 }, // End Point
   ];
 
+
+  // Animate polyline drawing
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < routeCoordinates.length) {
+        setAnimatedCoordinates((prevCoords) => [...prevCoords, routeCoordinates[index]]);
+        index++;
+      } else {
+        clearInterval(interval); // Stop interval when all points are added
+      }
+    }, 500); // Adjust speed by changing this interval time (in ms)
+
+
+    return () => clearInterval(interval);
+  }, []);
+
+
   return (
     <View style={styles.container}>
       {/* Google Maps */}
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: 8.4825, 
+          latitude: 8.4825,
           longitude: 124.6660,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
@@ -46,6 +69,7 @@ const Home = () => {
           />
         </Marker>
 
+
         {/* End Marker */}
         <Marker
           coordinate={routeCoordinates[routeCoordinates.length - 1]}
@@ -53,18 +77,20 @@ const Home = () => {
           description="Destination"
         >
           <Image
-            source={require('../../../../assets/location.png')} 
+            source={require('../../../../assets/location.png')}
             style={styles.markerImage}
           />
         </Marker>
 
-        {/* Polyline */}
+
+        {/* Animated Polyline */}
         <Polyline
-          coordinates={routeCoordinates}
-          strokeColor="#00FF00" 
-          strokeWidth={5} 
+          coordinates={animatedCoordinates}
+          strokeColor="#00FF00"
+          strokeWidth={5}
         />
       </MapView>
+
 
       {/* Header */}
       <View style={styles.header}>
@@ -74,10 +100,11 @@ const Home = () => {
           <Text style={styles.subtitle}>Enjoy seamless bookings and real-time updates!</Text>
         </View>
         <Image
-          source={require('../../../../assets/bus.png')} 
+          source={require('../../../../assets/bus.png')}
           style={styles.busIcon}
         />
       </View>
+
 
       {/* Book Now Button */}
       <TouchableOpacity
@@ -90,6 +117,7 @@ const Home = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -162,5 +190,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
 
 export default Home;
