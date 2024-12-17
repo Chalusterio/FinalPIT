@@ -9,28 +9,55 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { db } from './firebase'; // Import Firestore instance
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const { width, height } = Dimensions.get('window');
+
+const { width } = Dimensions.get('window');
 
 const EmergencyContactsNum = () => {
   const router = useRouter();
   const [contactName, setContactName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+  const [relation, setRelation] = useState('');
 
-  const handleSave = () => {
-    if (!contactName || !mobileNumber) {
-      Alert.alert('Error', 'Please fill out both fields.');
+  const handleSave = async () => {
+    if (!contactName || !mobileNumber || !relation) {
+      Alert.alert('Error', 'Please fill out all fields.');
       return;
     }
 
-    router.push({
-      pathname: '/EmergencyContacts',
-      params: { name: contactName, mobile: mobileNumber },
-    });
+    const phoneRegex = /^\+?[0-9]{10,15}$/;
+    if (!phoneRegex.test(mobileNumber)) {
+      Alert.alert('Error', 'Please enter a valid mobile number.');
+      return;
+    }
+
+    try {
+
+      // Save contact to Firestore
+      await addDoc(collection(db, 'emergencyContactsNum'), {
+        contactName: contactName.trim(),
+        mobileNumber: mobileNumber.trim(),
+        relation: relation.trim(),
+        createdAt: serverTimestamp(),
+      });
+
+      Alert.alert('Success', 'Contact saved successfully!');
+      router.push('/EmergencyContacts');
+    } catch (error) {
+      console.error('Error saving contact:', error.message);
+      Alert.alert('Error', 'Could not save contact. Please try again.');
+    }
   };
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <Ionicons name="arrow-back" size={24} color="#4B79A1" />
+      </TouchableOpacity>
+
       <Text style={styles.header}>Add Emergency Contact</Text>
       <TextInput
         style={styles.input}
@@ -45,6 +72,12 @@ const EmergencyContactsNum = () => {
         value={mobileNumber}
         onChangeText={setMobileNumber}
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Relationship (e.g., Friend, Parent)"
+        value={relation}
+        onChangeText={setRelation}
+      />
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
@@ -58,6 +91,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAF2F8',
     padding: 20,
     justifyContent: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 10,
   },
   header: {
     fontSize: width * 0.06,
@@ -88,3 +127,4 @@ const styles = StyleSheet.create({
 });
 
 export default EmergencyContactsNum;
+

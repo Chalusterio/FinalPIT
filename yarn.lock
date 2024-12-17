@@ -2767,7 +2767,12 @@
   dependencies:
     plist "^3.1.0"
 
-"@react-native-picker/picker@^2.9.0":
+"@react-native-firebase/firestore@^21.6.1":
+  version "21.6.1"
+  resolved "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-21.6.1.tgz"
+  integrity sha512-i3RQM11zTRCYc7/KdD0MiCm7UyyTecDXG/89lEv5hvVJMS6ltIfK+0rDheSpBzYlK4kNoK765jnvVAQxIFEqbA==
+
+"@react-native-picker/picker@^2.10.2":
   version "2.10.2"
   resolved "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.10.2.tgz"
   integrity sha512-kr3OvCRwTYjR/OKlb52k4xmQVU7dPRIALqpyiihexdJxEgvc1smnepgqCeM9oXmNSG4YaV5/RSxFlLC5Z/T/Eg==
