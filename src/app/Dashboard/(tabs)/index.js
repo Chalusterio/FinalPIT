@@ -3,21 +3,20 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 
+// Import assets
+import busIcon from '../../../../assets/bus.png';
+import busInverted from '../../../../assets/bus inverted.png';
+import locationIcon from '../../../../assets/location.png';
 
 const { width, height } = Dimensions.get('window');
 
-
 const Home = () => {
   const navigation = useNavigation();
+
+  // State to hold animated coordinates
   const [animatedCoordinates, setAnimatedCoordinates] = useState([]);
 
-
-  const handleBookNowClick = () => {
-    navigation.navigate('Transport');
-  };
-
-
-  // Coordinates for the route
+  // Route Coordinates
   const routeCoordinates = [
     { latitude: 8.484825175487972, longitude: 124.65648890310474 }, // Starting Point
     { latitude: 8.48443894384918, longitude: 124.65759648778983 }, // Turn 1
@@ -27,23 +26,30 @@ const Home = () => {
     { latitude: 8.477177781842084, longitude: 124.67711743736216 }, // End Point
   ];
 
-
   // Animate polyline drawing
   useEffect(() => {
     let index = 0;
     const interval = setInterval(() => {
       if (index < routeCoordinates.length) {
-        setAnimatedCoordinates((prevCoords) => [...prevCoords, routeCoordinates[index]]);
+        setAnimatedCoordinates((prevCoords) => {
+          const newCoord = routeCoordinates[index];
+          if (newCoord && newCoord.latitude && newCoord.longitude) {
+            return [...prevCoords, newCoord];
+          }
+          return prevCoords;
+        });
         index++;
       } else {
-        clearInterval(interval); // Stop interval when all points are added
+        clearInterval(interval);
       }
-    }, 500); // Adjust speed by changing this interval time (in ms)
-
+    }, 500); // Adjust speed here
 
     return () => clearInterval(interval);
   }, []);
 
+  const handleBookNowClick = () => {
+    navigation.navigate('Transport');
+  };
 
   return (
     <View style={styles.container}>
@@ -58,39 +64,24 @@ const Home = () => {
         }}
       >
         {/* Start Marker */}
-        <Marker
-          coordinate={routeCoordinates[0]}
-          title="Start Point"
-          description="Starting Location"
-        >
-          <Image
-            source={require('../../../../assets/bus inverted.png')}
-            style={styles.markerImage}
-          />
+        <Marker coordinate={routeCoordinates[0]} title="Start Point" description="Starting Location">
+          <Image source={busInverted} style={styles.markerImage} />
         </Marker>
-
 
         {/* End Marker */}
-        <Marker
-          coordinate={routeCoordinates[routeCoordinates.length - 1]}
-          title="End Point"
-          description="Destination"
-        >
-          <Image
-            source={require('../../../../assets/location.png')}
-            style={styles.markerImage}
-          />
+        <Marker coordinate={routeCoordinates[routeCoordinates.length - 1]} title="End Point" description="Destination">
+          <Image source={locationIcon} style={styles.markerImage} />
         </Marker>
 
-
         {/* Animated Polyline */}
-        <Polyline
-          coordinates={animatedCoordinates}
-          strokeColor="#00FF00"
-          strokeWidth={5}
-        />
+        {animatedCoordinates.length > 0 && (
+          <Polyline
+            coordinates={animatedCoordinates.filter(coord => coord && coord.latitude && coord.longitude)}
+            strokeColor="#00FF00"
+            strokeWidth={5}
+          />
+        )}
       </MapView>
-
 
       {/* Header */}
       <View style={styles.header}>
@@ -99,25 +90,16 @@ const Home = () => {
           <Text style={styles.subtitle}>Effortless Travel Made Simple</Text>
           <Text style={styles.subtitle}>Enjoy seamless bookings and real-time updates!</Text>
         </View>
-        <Image
-          source={require('../../../../assets/bus.png')}
-          style={styles.busIcon}
-        />
+        <Image source={busIcon} style={styles.busIcon} />
       </View>
 
-
       {/* Book Now Button */}
-      <TouchableOpacity
-        style={styles.bookNowButton}
-        onPress={handleBookNowClick}
-        activeOpacity={0.8}
-      >
+      <TouchableOpacity style={styles.bookNowButton} onPress={handleBookNowClick} activeOpacity={0.8}>
         <Text style={styles.bookNowText}>Book Now!</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -190,6 +172,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
 
 export default Home;
