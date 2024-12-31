@@ -5,22 +5,22 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 const AvailableCommuters = ({ navigation }) => {
   // Commuter locations with IDs 1 through 7
   const commuterLocations = [
-    { id: 1, name: 'Bolonsiri Rd', latitude: 8.482, longitude: 124.641 },
-    { id: 2, name: 'Cogon Public Market', latitude: 8.4788, longitude: 124.6327 },
-    { id: 3, name: 'Centrio Mall', latitude: 8.479, longitude: 124.645 },
-    { id: 4, name: 'Jollibee Agora Market', latitude: 8.485, longitude: 124.652 },
-    { id: 5, name: 'Puntod', latitude: 8.471, longitude: 124.657 },
+    { id: 1, name: 'SM Downtown', latitude: 8.484948866018328, longitude: 124.65444963316311 },
+    { id: 2, name: 'Limketkai Mall', latitude: 8.481976515001733, longitude: 124.65707902144969 },
+    { id: 3, name: 'Ayala', latitude: 8.48522793502486, longitude: 124.65108093154014 },
+    { id: 4, name: 'Cogon Public Market', latitude: 8.476976497704133, longitude: 124.6514986855942 },
+    { id: 5, name: 'USTP CDO', latitude: 8.484785418014178, longitude: 124.65660503956367 },
     { id: 6, name: 'Lapasan', latitude: 8.4833, longitude: 124.6617 },
     { id: 7, name: 'Final Destination', latitude: 8.47954, longitude: 124.67299 },
   ];
 
   // Route coordinates connecting all IDs
   const routeCoordinates = [
-    { latitude: 8.482, longitude: 124.641 }, // id:1
-    { latitude: 8.4788, longitude: 124.6327 }, // id:2
-    { latitude: 8.479, longitude: 124.645 }, // id:3
-    { latitude: 8.485, longitude: 124.652 }, // id:4
-    { latitude: 8.471, longitude: 124.657 }, // id:5
+    { latitude: 8.484, longitude: 124.654 }, // id:1
+    { latitude: 8.4819, longitude: 124.657 }, // id:2
+    { latitude: 8.485, longitude: 124.651 }, // id:3
+    { latitude: 8.476, longitude: 124.651 }, // id:4
+    { latitude: 8.484, longitude: 124.656 }, // id:5
     { latitude: 8.4833, longitude: 124.6617 }, // id:6
     { latitude: 8.47954, longitude: 124.67299 }, // id:7
   ];
