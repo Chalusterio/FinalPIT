@@ -40,26 +40,24 @@ const AvailableCommuters = ({ navigation }) => {
           longitudeDelta: 0.05,
         }}
       >
-        {/* Markers for all commuter locations */}
         {commuterLocations.map((location) => (
           <Marker
             key={location.id}
             coordinate={{ latitude: location.latitude, longitude: location.longitude }}
             title={location.name}
-            onPress={() => handleMarkerPress(location)} // Pass location details on marker click
+            onPress={() => handleMarkerPress(location)}
           >
             <Image
               source={
                 location.id === 7
-                  ? require('../../assets/bus.png') // Custom bus icon for the final destination
-                  : require('../../assets/location.png') // Default icon for other locations
+                  ? require('../../assets/bus.png') 
+                  : require('../../assets/location.png') 
               }
               style={styles.markerImage}
             />
           </Marker>
         ))}
 
-        {/* Polyline connecting all locations */}
         <Polyline coordinates={routeCoordinates} strokeColor="green" strokeWidth={5} />
       </MapView>
     </View>
