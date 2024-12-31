@@ -38,7 +38,6 @@ const LogIn = () => {
   };
 
   const handleLogin = async () => {
-    // Regex for email and numeric-only input (mobile number)
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email.trim()) {
@@ -57,27 +56,27 @@ const LogIn = () => {
     }
 
     try {
-      // Firebase Authentication logic
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Check for specific credentials
-
       if (email === 'jofafs123@gmail.com' && password === 'kingking') {
-
         Alert.alert('Login Successful', 'Redirecting to DashboardDriver');
         router.replace('/DashboardDriver'); // Redirect to DashboardDriver
         return;
       }
 
-      // Fetch user's first and last name from Firestore
+      Alert.alert('Login Successful', 'Redirecting to Payment Methods');
+      router.replace({
+        pathname: '/PaymentMed',
+        params: { onCompletion: true }, // Pass a parameter indicating redirection to Dashboard
+      });
+
       const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
         const { firstName, lastName } = userDoc.data();
         Alert.alert('Login Successful', `Welcome back, ${firstName} ${lastName}!`);
-        router.replace('/Dashboard'); // Redirect to Dashboard after successful login
       } else {
         Alert.alert('Login Failed', 'User data not found in the database.');
       }
@@ -121,7 +120,7 @@ const LogIn = () => {
           outlineColor="#4B79A1"
           activeOutlineColor="#4B79A1"
         />
-        {password.trim().length > 0 && ( // Show the icon only if there's input
+        {password.trim().length > 0 && (
           <TouchableOpacity
             style={styles.eyeIcon}
             onPress={() => setShowPassword(!showPassword)}
