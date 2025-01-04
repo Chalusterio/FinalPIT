@@ -52,7 +52,6 @@ const Layout = () => {
     >
       <Stack.Screen name="index" options={{ title: 'Login' }} />
       <Stack.Screen name="Register" options={{ title: 'Register' }} />
-      <Stack.Screen name="UserProfile" options={{ title: 'User Profile' }} />
       <Stack.Screen name="PasswordRecovery" options={{ title: 'Password Recovery' }} />
       <Stack.Screen name="Dashboard/(tabs)" options={{ title: 'Home' }} />
       <Stack.Screen
